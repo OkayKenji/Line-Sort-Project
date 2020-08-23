@@ -34,16 +34,20 @@ function selectionSort(arr) {
 }
 
 /* Insertion sort 
- *
+ * 
  */
 function insertionSort(arr) {
-  for (var i = 1; i < arr.length; i++) {
-
-    for (var j = i; j > 0; j--) {
-      if (arr[i] < arr[j]) {
-
-      }
+  let y=true;
+  for (let i = 1; i < arr.length; i++) {
+    for (let j = i ; y ; j-- ) {
+       if(arr[j]>arr[j-1]) {
+         let rem = arr[j];
+         arr[j] = arr[j-1];
+         arr[j-1] = rem; 
+         y=false;
+       }
     }
+    y=true;
   }
   return arr;
 }
