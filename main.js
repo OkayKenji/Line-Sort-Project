@@ -33,7 +33,7 @@ let sortAllowed = false;
 let stayStartScreen = true;
 let createShuffle = true;
 let arrToSort;
-let index = 0;
+let index;
 let type;
 let colorScheme;
 let inc;
@@ -140,10 +140,11 @@ function draw() {
 
     //text to show
     if (type == "Selection Sort") {
-      text('This is a type of sorting where..\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+      text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+      index = 0;
     } else if (type == "Insertion Sort") {
-      text('This is a type of sorting where', 132, 115);
-      index = 1; //temp place to put it
+      text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
+      index = 1;
     } else {
       console.log("ERROR!");
     }
@@ -258,7 +259,8 @@ function insertionSortA(i) {
   let innerLoop = true;
   //console.log(i);
   if (i < arrToSort.length) {
-    for (let j = i; (innerLoop)&&(j>0) ; j--) {
+    for (let j = i;
+      (innerLoop) && (j > 0); j--) {
       //console.log(j);
       if (arrToSort[j].length < arrToSort[j - 1].length) {
 
