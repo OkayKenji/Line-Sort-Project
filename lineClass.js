@@ -1,7 +1,7 @@
 // This is the lineClass; 
 // This is to create line objects. 
 // 
-// v8.20.2020 
+// v8.2020 
 //
 // Special thanks to: 
 // * "Daniel Shiffman" @ The Coding Train for helping me to learn this stuff
