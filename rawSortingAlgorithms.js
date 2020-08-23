@@ -40,12 +40,12 @@ function insertionSort(arr) {
   let y=true;
   for (let i = 1; i < arr.length; i++) {
     for (let j = i ; y ; j-- ) {
-       if(arr[j]>arr[j-1]) {
-         let rem = arr[j];
+       if(arr[j]<arr[j-1]) {
+         let temp = arr[j];
          arr[j] = arr[j-1];
-         arr[j-1] = rem; 
+         arr[j-1] = temp; 
+       } else 
          y=false;
-       }
     }
     y=true;
   }
