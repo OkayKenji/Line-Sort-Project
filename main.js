@@ -163,7 +163,7 @@ function draw() {
     text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
 
   } else {
-    
+
     //creates the reset button
     reset.mousePressed(() =>
       location.reload()
@@ -184,13 +184,13 @@ function draw() {
     if (createShuffle) {
       let arrOfLines = [];
       for (let i = 0; i < width; i++) {
-        arrOfLines.push(new lineSegment(i+1, i)); //high to low;
+        arrOfLines.push(new lineSegment(i + 1, i)); //high to low;
       }
       arrToSort = shuffle(arrOfLines);
 
 
       for (var i = 0; i < arrToSort.length; i++)
-        arrToSort[i].x = i+1;
+        arrToSort[i].x = i + 1;
 
       createShuffle = false;
     }
@@ -213,7 +213,7 @@ function draw() {
       }
     }
   }
-  //mouseLocation();
+  mouseLocation();
 }
 
 //
@@ -241,6 +241,29 @@ function selectionSortA(i) {
     var rem1 = arrToSort[i].lineColor;
     arrToSort[i].lineColor = arrToSort[lowestIndex].lineColor;
     arrToSort[lowestIndex].lineColor = rem1;
+  }
+  return i++;
+}
+
+//
+function insertionSort(i) {
+  let innerLoop = true;
+  if (i < arrToSort.length) {
+    for (let j = i; innerLoop; j--) {
+      if (arrToSort[j].length < arrToSort[j - 1].length) {
+
+        let rem = arrToSort[j].length;
+        arrToSort[j].length = arrToSort[j - 1].length;
+        arrToSort[j - 1].length = rem;
+
+        let rem1 = arrToSort[j].lineColor;
+        arrToSort[j].lineColor = arrToSort[j - 1].lineColor;
+        arrToSort[j - 1].lineColor = rem1;
+
+      } else
+        innerLoop = false;
+    }
+    y = true;
   }
   return i++;
 }
