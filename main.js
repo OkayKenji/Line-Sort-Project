@@ -51,7 +51,7 @@ function setup() {
   sortType.position(10, 85);
   sortType.option('Selection Sort');
   sortType.option('Insertion Sort');
-  sortType.disable('Insertion Sort'); //TODO: Remove when this sort is created 
+  //sortType.disable('Insertion Sort'); //TODO: Remove when this sort is created 
 
   //creates the drop down menu for what color scheme user wants
   colorSelect = createSelect();
@@ -203,11 +203,18 @@ function draw() {
         if ((type == "Selection Sort") && precede) {
           selectionSortA(index);
           index++;
-          precede = false;
+        } else if ((type == "Insertion Sort") && precede) {
+          insertionSortA(index);
+          index++;
         }
+
+        precede = false;
       } else {
         if (type == "Selection Sort") {
           selectionSortA(index);
+          index++;
+        } else if (type == "Insertion Sort") {
+          insertionSortA(index);
           index++;
         }
       }
@@ -246,7 +253,7 @@ function selectionSortA(i) {
 }
 
 //
-function insertionSort(i) {
+function insertionSortA(i) {
   let innerLoop = true;
   if (i < arrToSort.length) {
     for (let j = i; innerLoop; j--) {
