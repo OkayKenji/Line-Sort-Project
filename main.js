@@ -184,13 +184,13 @@ function draw() {
     if (createShuffle) {
       let arrOfLines = [];
       for (let i = 0; i < width; i++) {
-        arrOfLines.push(new lineSegment(i, i)); //high to low;
+        arrOfLines.push(new lineSegment(i+1, i)); //high to low;
       }
       arrToSort = shuffle(arrOfLines);
 
 
       for (var i = 0; i < arrToSort.length; i++)
-        arrToSort[i].x = i;
+        arrToSort[i].x = i+1;
 
       createShuffle = false;
     }
