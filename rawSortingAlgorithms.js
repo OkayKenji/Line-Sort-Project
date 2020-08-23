@@ -34,7 +34,11 @@ function selectionSort(arr) {
 }
 
 /* Insertion sort 
- * 
+ *
+ * How insertion sort works:
+ *  - Starts at the second index
+ *  - Looks to the left, and swaps postion with it if its less then the one to the left
+ *  - Keeps moving left until its at the correct spot
  */
 function insertionSort(arr) {
   let y=true;
