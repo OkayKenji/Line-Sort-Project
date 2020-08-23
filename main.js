@@ -3,14 +3,12 @@
 //
 // Implemented sorts: 
 //  * Selection sort
-//
-// Sorts to be implmented:
 //  * Insertion sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
 //
-// v8.20.2020 
+// v8.2020 
 //
 // Special thanks to: 
 // * "Daniel Shiffman" @ The Coding Train for helping me to learn this stuff
@@ -185,14 +183,14 @@ function draw() {
     //on the 0th pass only - creates an array of lines to sort
     if (createShuffle) {
       let arrOfLines = [];
-      for (let i = 0; i < width; i++) {
-        arrOfLines.push(new lineSegment(i + 1, i)); //high to low;
+      for (let i = 0; i <= width; i++) {
+        arrOfLines.push(new lineSegment(i, i)); //high to low;
       }
       arrToSort = shuffle(arrOfLines);
 
 
       for (var i = 0; i < arrToSort.length; i++)
-        arrToSort[i].x = i + 1;
+        arrToSort[i].x = i;
 
       createShuffle = false;
     }
@@ -225,7 +223,7 @@ function draw() {
   //mouseLocation();
 }
 
-//
+//Draws all the lines
 function drawAllLines() {
   //console.log(arrToSort);
   for (let j = 0; j < arrToSort.length; j++) {
@@ -233,7 +231,7 @@ function drawAllLines() {
   }
 }
 
-//
+//Selection sort
 function selectionSortA(i) {
   if (i < arrToSort.length) {
     var lowestIndex = i;
@@ -254,7 +252,7 @@ function selectionSortA(i) {
   return i++;
 }
 
-//
+//Insertion Sort
 function insertionSortA(i) {
   let innerLoop = true;
   //console.log(i);
