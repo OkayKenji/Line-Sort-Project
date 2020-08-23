@@ -3,14 +3,12 @@
 //
 // Implemented sorts: 
 //  * Selection sort
-//
-// Sorts to be implmented:
 //  * Insertion sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
 //
-// v8.20.2020 
+// v8.2020 
 //
 // Special thanks to: 
 // * "Daniel Shiffman" @ The Coding Train for helping me to learn this stuff
@@ -33,7 +31,7 @@ let sortAllowed = false;
 let stayStartScreen = true;
 let createShuffle = true;
 let arrToSort;
-let index = 0;
+let index;
 let type;
 let colorScheme;
 let inc;
@@ -51,7 +49,7 @@ function setup() {
   sortType.position(10, 85);
   sortType.option('Selection Sort');
   sortType.option('Insertion Sort');
-  sortType.disable('Insertion Sort'); //TODO: Remove when this sort is created 
+  //sortType.disable('Insertion Sort'); //TODO: Remove when this sort is created 
 
   //creates the drop down menu for what color scheme user wants
   colorSelect = createSelect();
@@ -140,9 +138,11 @@ function draw() {
 
     //text to show
     if (type == "Selection Sort") {
-      text('This is a type of sorting where..\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+      text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+      index = 0;
     } else if (type == "Insertion Sort") {
-      text('To be implemented', 132, 115);
+      text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
+      index = 1;
     } else {
       console.log("ERROR!");
     }
@@ -163,7 +163,7 @@ function draw() {
     text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
 
   } else {
-    
+
     //creates the reset button
     reset.mousePressed(() =>
       location.reload()
@@ -183,14 +183,14 @@ function draw() {
     //on the 0th pass only - creates an array of lines to sort
     if (createShuffle) {
       let arrOfLines = [];
-      for (let i = 0; i < width; i++) {
-        arrOfLines.push(new lineSegment(i+1, i)); //high to low;
+      for (let i = 0; i <= width; i++) {
+        arrOfLines.push(new lineSegment(i, i)); //high to low;
       }
       arrToSort = shuffle(arrOfLines);
 
 
       for (var i = 0; i < arrToSort.length; i++)
-        arrToSort[i].x = i+1;
+        arrToSort[i].x = i;
 
       createShuffle = false;
     }
@@ -203,11 +203,18 @@ function draw() {
         if ((type == "Selection Sort") && precede) {
           selectionSortA(index);
           index++;
-          precede = false;
+        } else if ((type == "Insertion Sort") && precede) {
+          insertionSortA(index);
+          index++;
         }
+
+        precede = false;
       } else {
         if (type == "Selection Sort") {
           selectionSortA(index);
+          index++;
+        } else if (type == "Insertion Sort") {
+          insertionSortA(index);
           index++;
         }
       }
@@ -216,7 +223,7 @@ function draw() {
   //mouseLocation();
 }
 
-//
+//Draws all the lines
 function drawAllLines() {
   //console.log(arrToSort);
   for (let j = 0; j < arrToSort.length; j++) {
@@ -224,7 +231,7 @@ function drawAllLines() {
   }
 }
 
-//
+//Selection sort
 function selectionSortA(i) {
   if (i < arrToSort.length) {
     var lowestIndex = i;
@@ -241,6 +248,32 @@ function selectionSortA(i) {
     var rem1 = arrToSort[i].lineColor;
     arrToSort[i].lineColor = arrToSort[lowestIndex].lineColor;
     arrToSort[lowestIndex].lineColor = rem1;
+  }
+  return i++;
+}
+
+//Insertion Sort
+function insertionSortA(i) {
+  let innerLoop = true;
+  //console.log(i);
+  if (i < arrToSort.length) {
+    for (let j = i;
+      (innerLoop) && (j > 0); j--) {
+      //console.log(j);
+      if (arrToSort[j].length < arrToSort[j - 1].length) {
+
+        let rem = arrToSort[j].length;
+        arrToSort[j].length = arrToSort[j - 1].length;
+        arrToSort[j - 1].length = rem;
+
+        let rem1 = arrToSort[j].lineColor;
+        arrToSort[j].lineColor = arrToSort[j - 1].lineColor;
+        arrToSort[j - 1].lineColor = rem1;
+
+      } else
+        innerLoop = false;
+    }
+    y = true;
   }
   return i++;
 }
