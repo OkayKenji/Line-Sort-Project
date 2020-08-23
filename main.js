@@ -143,6 +143,7 @@ function draw() {
       text('This is a type of sorting where..\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
     } else if (type == "Insertion Sort") {
       text('This is a type of sorting where', 132, 115);
+      index = 1; //temp place to put it
     } else {
       console.log("ERROR!");
     }
@@ -220,7 +221,7 @@ function draw() {
       }
     }
   }
-  mouseLocation();
+  //mouseLocation();
 }
 
 //
@@ -255,8 +256,10 @@ function selectionSortA(i) {
 //
 function insertionSortA(i) {
   let innerLoop = true;
+  //console.log(i);
   if (i < arrToSort.length) {
-    for (let j = i; innerLoop; j--) {
+    for (let j = i; (innerLoop)&&(j>0) ; j--) {
+      //console.log(j);
       if (arrToSort[j].length < arrToSort[j - 1].length) {
 
         let rem = arrToSort[j].length;
