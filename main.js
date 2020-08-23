@@ -163,7 +163,7 @@ function draw() {
     text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
 
   } else {
-
+    
     //creates the reset button
     reset.mousePressed(() =>
       location.reload()
@@ -212,8 +212,8 @@ function draw() {
         }
       }
     }
-
   }
+  //mouseLocation();
 }
 
 //
