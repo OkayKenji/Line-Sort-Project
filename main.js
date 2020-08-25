@@ -28,7 +28,7 @@
 // @param inc              Automatically loop or manually do it.
 // @param precede          If inc=false, 'precede' decides if loop can run once
 let sortAllowed = false;
-let stayStartScreen = true;
+let startBar = false;
 let createShuffle = true;
 let arrToSort;
 let index;
@@ -49,7 +49,7 @@ function setup() {
   sortType.position(10, 85);
   sortType.option('Selection Sort');
   sortType.option('Insertion Sort');
-  //sortType.disable('Insertion Sort'); //TODO: Remove when this sort is created 
+  sortType.changed(changeBox);
 
   //creates the drop down menu for what color scheme user wants
   colorSelect = createSelect();
@@ -76,6 +76,7 @@ function setup() {
   go = createButton("GO");
   go.position(width / 2, height - 35);
   go.mousePressed(() => {
+    startBar = true;
     sortType.remove()
     go.remove();
     colorSelect.remove();
@@ -84,14 +85,13 @@ function setup() {
 
     colorScheme = colorSelect.value();
 
-
     if (incremental.value() == "Yes") {
       inc = true;
       nxt = createButton("\>");
       nxt.position(0, 25);
     } else
       inc = false;
-
+    clear();
     letsSort = createButton("Sort!");
     letsSort.position(0, 25);
     reset = createButton("Reset");
@@ -100,69 +100,15 @@ function setup() {
 
     stayStartScreen = false;
   });
+
+  //loads the start screen and the visuals needed for it
+  startScreen();
+
 }
 
 function draw() {
-  background(0);
-
-  //if true => Loads the text/display elements for the start screen
-  //     else =>
-  if (stayStartScreen) {
-    //creates the start screen background as a square with a yellow border;
-    strokeWeight(5); //border thickness;
-    stroke(255, 200, 0, 255); //color of the border; (#FFC800)
-    fill(20) //inside;
-    rect(2.5, 2.5, width - 5, height - 5) //creates the rectangle
-
-    //sub-box with similar design
-    rect(125, 85, width - 50 - 85, 225);
-
-    //the details of the sub-box
-    textAlign(CENTER);
-    fill(255);
-    strokeWeight(0);
-    noStroke();
-    textSize(32);
-    text('Sorter', width / 2, 40);
-    textSize(14)
-    text('Sorts the lines in increasing order using diffrent types of sorting algorithms', width / 2, 65);
-    strokeWeight(1);
-
-    //gives facts about how each type of sorting works. 
-    type = sortType.value();
-    textSize(12);
-    textAlign(LEFT);
-    textStyle(BOLD);
-    text(type, 130, 100);
-    textStyle(NORMAL);
-
-    //text to show
-    if (type == "Selection Sort") {
-      text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
-      index = 0;
-    } else if (type == "Insertion Sort") {
-      text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
-      index = 1;
-    } else {
-      console.log("ERROR!");
-    }
-
-    //text for all of the options
-    //bold
-    textSize(14);
-    textStyle(BOLD);
-    text("Select the color:", 10, 330);
-    text("Manually loop:", 10, 405);
-    text("Width/Height", 10, height - 45);
-
-    //normal
-    textSize(12);
-    textStyle(NORMAL);
-    text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
-    text("(yes/no)", 11, 420);
-    text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
-
-  } else {
+  if (startBar) {
+    background(0);
 
     //creates the reset button
     reset.mousePressed(() =>
@@ -220,12 +166,79 @@ function draw() {
       }
     }
   }
-  //mouseLocation();
 }
+
+//
+function changeBox() {
+  quickColor();
+
+  //sub-box with similar design
+  rect(125, 85, width - 50 - 85, 225);
+
+  quickTextColor();
+  type = sortType.value();
+  textSize(12);
+  textAlign(LEFT);
+  textStyle(BOLD);
+  text(type, 130, 100);
+  textStyle(NORMAL);
+  if (type == "Selection Sort") {
+    text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+    index = 0;
+  } else if (type == "Insertion Sort") {
+    text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
+    index = 1;
+  } else {
+    console.log("ERROR!");
+  }
+}
+
+//
+function quickColor() {
+  strokeWeight(5); //border thickness;
+  stroke(255, 200, 0, 255); //color of the border; (#FFC800)
+  fill(20) //inside;
+}
+
+//
+function quickTextColor() {
+  fill(255);
+  strokeWeight(0);
+}
+
+//
+function startScreen() {
+  quickColor();
+  rect(2.5, 2.5, width - 5, height - 5) //creates the rectangle
+
+  textAlign(CENTER);
+  fill(255);
+  strokeWeight(0);
+  textSize(32);
+  text('Sorter', width / 2, 40);
+  textSize(14)
+  text('Sorts the lines in increasing order using diffrent types of sorting algorithms', width / 2, 65);
+
+  textAlign(LEFT);
+  textSize(14);
+  textStyle(BOLD);
+  text("Select the color:", 10, 330);
+  text("Manually loop:", 10, 405);
+  text("Width/Height", 10, height - 45);
+
+  //normal
+  textSize(12);
+  textStyle(NORMAL);
+  text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
+  text("(yes/no)", 11, 420);
+  text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
+
+  changeBox();
+}
+
 
 //Draws all the lines
 function drawAllLines() {
-  //console.log(arrToSort);
   for (let j = 0; j < arrToSort.length; j++) {
     arrToSort[j].place();
   }
@@ -255,11 +268,9 @@ function selectionSortA(i) {
 //Insertion Sort
 function insertionSortA(i) {
   let innerLoop = true;
-  //console.log(i);
   if (i < arrToSort.length) {
     for (let j = i;
       (innerLoop) && (j > 0); j--) {
-      //console.log(j);
       if (arrToSort[j].length < arrToSort[j - 1].length) {
 
         let rem = arrToSort[j].length;
