@@ -30,7 +30,7 @@ class lineSegment {
   /**Place, places a line and also keeps track of how much the line was moved. 
    */
   place() {
-    //stroke(255, this.bluenessGreeness, this.bluenessGreeness, 255);
+    strokeWeight(1);
     stroke(this.lineColor);
     line(this.x, height, this.x, height - this.length);
   }
