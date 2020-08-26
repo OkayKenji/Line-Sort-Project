@@ -44,14 +44,12 @@ let barWidth;
 let saved = [];
 
 let go, sortType, reset, letsSort, colorSelect, incremental, nxt; //buttons/non-text inputs
-let screenSize; //text input
-
-let inp;
+let screenSize, numBarsInput; //text input
 
 function setup() {
   createCanvas(512, 512); //dont go over 1028
   strokeWeight(1);
-  inp = createInput('512');
+
   //creates the drop down menu for what type of sort the user wants
   sortType = createSelect();
   sortType.position(10, 85);
@@ -61,7 +59,7 @@ function setup() {
 
   //creates the drop down menu for what color scheme user wants
   colorSelect = createSelect();
-  colorSelect.position(123, 315);
+  colorSelect.position(130, 315);
   colorSelect.option('Red'); // #FF0000
   colorSelect.option('Green'); // #00FF00
   colorSelect.option('Blue'); // #0000FF
@@ -69,15 +67,20 @@ function setup() {
 
   //creates the drop down menu for if the user wants to manually loop
   incremental = createSelect();
-  incremental.position(123, 390);
+  incremental.position(130, 390);
   incremental.option('No');
   incremental.option('Yes');
   incremental.size(65)
 
   //input if user want to have a larger screen
   screenSize = createInput('512');
-  screenSize.position(123, height - 60);
+  screenSize.position(130, height - 60);
   screenSize.size(55)
+
+  //input for the number of bars
+  numBarsInput = createInput('512');
+  numBarsInput.position(320,315);
+  numBarsInput.size(55)
 
   //Removes the start screen and all irrelvent input elements. 
   //Loads elements needed on next screen
@@ -90,6 +93,7 @@ function setup() {
     colorSelect.remove();
     incremental.remove();
     screenSize.remove();
+    numBarsInput.remove(); 
 
     colorScheme = colorSelect.value();
 
@@ -116,24 +120,6 @@ function setup() {
 
 }
 
-function barGenerator() {
-  let arrOfBars = [];
-  numRequestBars = inp.value();
-
-  barWidth = width / numRequestBars;
-
-  let spacer = barWidth / 2 + 0.5;
-  let xLocCenter = spacer;
-  let L1 = 0
-  for (let i = 0; i < numRequestBars; i++) {
-    arrOfBars.push(new bar(xLocCenter, L1))
-    L1 += barWidth;
-    saved.push(xLocCenter);
-    xLocCenter += spacer * 2 - 1;
-  }
-  arrToSort = shuffle(arrOfBars);
-}
-
 function draw() {
   if (startBar) {
     background(0); //sets background black so that after each run we can't see the one before it. 
@@ -142,8 +128,6 @@ function draw() {
     strokeWeight(1);
     fill(0, 0);
     rect(0, 0, width, height)
-    //strokeWeight(1);
-
 
     //when hit resets everything
     reset.mousePressed(() =>
@@ -217,12 +201,14 @@ function startScreen() {
   text("Select the color:", 10, 330);
   text("Manually loop:", 10, 405);
   text("Width/Height", 10, height - 45);
+  text("Number of bars:", 200, 330);
 
   textSize(12);
   textStyle(NORMAL);
   text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
   text("(yes/no)", 11, 420);
   text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
+  text("(number)\nChanges the number\nof bars.", 200, 345);
 
   changeBox();
 }
@@ -257,6 +243,31 @@ function changeBox() {
     console.log("ERROR!");
   }
 }
+
+/**barGenerator
+ * 
+ * barGenerator - Generates a unsorted array of bar objects.
+ * 
+ * @returns Nothing
+ */
+function barGenerator() {
+  let arrOfBars = [];
+  numRequestBars = numBarsInput.value();
+
+  barWidth = width / numRequestBars;
+
+  let spacer = barWidth / 2 + 0.5;
+  let xLocCenter = spacer;
+  let L1 = 0
+  for (let i = 0; i < numRequestBars; i++) {
+    arrOfBars.push(new bar(xLocCenter, L1))
+    L1 += barWidth;
+    saved.push(xLocCenter);
+    xLocCenter += spacer * 2 - 1;
+  }
+  arrToSort = shuffle(arrOfBars);
+}
+
 
 /** quickColor
  *
@@ -298,11 +309,9 @@ function selectionSortA(i) {
         lowestIndex = j;
       }
     }
-
     var rem = arrToSort[i]; 
     arrToSort[i] = arrToSort[lowestIndex];
     arrToSort[lowestIndex] = rem; 
-
   }
   return i++;
 }
@@ -314,11 +323,9 @@ function insertionSortA(i) {
     for (let j = i;
       (innerLoop) && (j > 0); j--) {
       if (arrToSort[j].length < arrToSort[j - 1].length) {
-
-        var rem = arrToSort[i]; 
-        arrToSort[i] = arrToSort[lowestIndex];
-        arrToSort[lowestIndex] = rem
-
+        let rem = arrToSort[j];
+        arrToSort[j] = arrToSort[j - 1];
+        arrToSort[j - 1] = rem;
       } else
         innerLoop = false;
     }
