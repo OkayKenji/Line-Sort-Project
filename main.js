@@ -28,7 +28,8 @@
 // @param inc               Automatically loop or manually do it.
 // @param precede           If inc=false, 'precede' decides if loop can run once
 // @param numRequestedBars  The number of bars the user wants
-// @param barWidth          The width the bar has to be to fit all on the screen. 
+// @param barWidth          The width the bar has to be to fit all on the screen.
+// @param saved             An array that stores the where bars should be located on x-axis. 
 let sortAllowed = false;
 let startBar = false;
 let createShuffle = true;
@@ -40,6 +41,7 @@ let inc;
 let precede = false;
 let numRequestBars;
 let barWidth;
+let saved = [];
 
 let go, sortType, reset, letsSort, colorSelect, incremental, nxt; //buttons/non-text inputs
 let screenSize; //text input
@@ -104,7 +106,7 @@ function setup() {
     reset.position(0, 0);
     resizeCanvas(parseInt(screenSize.value()), parseInt(screenSize.value()));
 
-    yo();
+    barGenerator();
 
     startBar = true;
   });
@@ -114,29 +116,22 @@ function setup() {
 
 }
 
-function yo() {
+function barGenerator() {
   let arrOfBars = [];
   numRequestBars = inp.value();
 
   barWidth = width / numRequestBars;
 
-  let temp = barWidth / 2 + 0.5;
-  let temp1 = temp;
+  let spacer = barWidth / 2 + 0.5;
+  let xLocCenter = spacer;
   let L1 = 0
   for (let i = 0; i < numRequestBars; i++) {
-    arrOfBars.push(new bar(temp1, L1))
+    arrOfBars.push(new bar(xLocCenter, L1))
     L1 += barWidth;
-    temp1 += temp * 2 - 1;
+    saved.push(xLocCenter);
+    xLocCenter += spacer * 2 - 1;
   }
-
-
   arrToSort = shuffle(arrOfBars);
-
-  temp2 = temp;
-  for (var i = 0; i < arrToSort.length; i++) {
-    arrToSort[i].x = temp2;
-    temp2 += temp * 2 - 1;
-  }
 }
 
 function draw() {
@@ -289,7 +284,7 @@ function quickTextColor() {
 function drawAllLines() {
   rectMode(CENTER);
   for (let j = 0; j < arrToSort.length; j++) {
-    arrToSort[j].place();
+    arrToSort[j].place(saved[j]);
   }
   rectMode(CORNER);
 }
@@ -304,13 +299,10 @@ function selectionSortA(i) {
       }
     }
 
-    var rem = arrToSort[i].length;
-    arrToSort[i].length = arrToSort[lowestIndex].length;
-    arrToSort[lowestIndex].length = rem;
+    var rem = arrToSort[i]; 
+    arrToSort[i] = arrToSort[lowestIndex];
+    arrToSort[lowestIndex] = rem; 
 
-    var rem1 = arrToSort[i].barColor;
-    arrToSort[i].barColor = arrToSort[lowestIndex].barColor;
-    arrToSort[lowestIndex].barColor = rem1;
   }
   return i++;
 }
@@ -323,13 +315,9 @@ function insertionSortA(i) {
       (innerLoop) && (j > 0); j--) {
       if (arrToSort[j].length < arrToSort[j - 1].length) {
 
-        let rem = arrToSort[j].length;
-        arrToSort[j].length = arrToSort[j - 1].length;
-        arrToSort[j - 1].length = rem;
-
-        let rem1 = arrToSort[j].barColor;
-        arrToSort[j].barColor = arrToSort[j - 1].barColor;
-        arrToSort[j - 1].barColor = rem1;
+        var rem = arrToSort[i]; 
+        arrToSort[i] = arrToSort[lowestIndex];
+        arrToSort[lowestIndex] = rem
 
       } else
         innerLoop = false;
