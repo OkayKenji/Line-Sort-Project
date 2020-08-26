@@ -18,15 +18,17 @@
 // * The developers of p5.js
 
 //global vars 
-// @param sortAllowed      Remembers if sorting is allowed.
-// @param stayStartScreen  If true, stays on strart screen (see line ~76)
-// @param createShuffle    If true, creates array of lines and shuffles it
-// @param arrToSort        Stores the array that has elements that need to be sorted
-// @param index            Index used for the sorting loops
-// @param type             Type of sort requested
-// @param colorScheme      Color to be used by bars
-// @param inc              Automatically loop or manually do it.
-// @param precede          If inc=false, 'precede' decides if loop can run once
+// @param sortAllowed       Remembers if sorting is allowed.
+// @param startBar          Waits until user moves on from start screen
+// @param createShuffle     If true, creates array of lines and shuffles it
+// @param arrToSort         Stores the array that has elements that need to be sorted
+// @param index             Index used for the sorting loops
+// @param type              Type of sort requested
+// @param colorScheme       Color to be used by bars
+// @param inc               Automatically loop or manually do it.
+// @param precede           If inc=false, 'precede' decides if loop can run once
+// @param numRequestedBars  The number of bars the user wants
+// @param barWidth          The width the bar has to be to fit all on the screen. 
 let sortAllowed = false;
 let startBar = false;
 let createShuffle = true;
@@ -36,14 +38,18 @@ let type;
 let colorScheme;
 let inc;
 let precede = false;
+let numRequestBars;
+let barWidth;
 
 let go, sortType, reset, letsSort, colorSelect, incremental, nxt; //buttons/non-text inputs
 let screenSize; //text input
 
+let inp;
+
 function setup() {
   createCanvas(512, 512); //dont go over 1028
   strokeWeight(1);
-
+  inp = createInput('512');
   //creates the drop down menu for what type of sort the user wants
   sortType = createSelect();
   sortType.position(10, 85);
@@ -76,7 +82,7 @@ function setup() {
   go = createButton("GO");
   go.position(width / 2, height - 35);
   go.mousePressed(() => {
-    startBar = true;
+
     sortType.remove()
     go.remove();
     colorSelect.remove();
@@ -98,7 +104,9 @@ function setup() {
     reset.position(0, 0);
     resizeCanvas(parseInt(screenSize.value()), parseInt(screenSize.value()));
 
-    stayStartScreen = false;
+    yo();
+
+    startBar = true;
   });
 
   //loads the start screen and the visuals needed for it
@@ -106,39 +114,57 @@ function setup() {
 
 }
 
+function yo() {
+  let arrOfBars = [];
+  numRequestBars = inp.value();
+
+  barWidth = width / numRequestBars;
+
+  let temp = barWidth / 2 + 0.5;
+  let temp1 = temp;
+  let L1 = 0
+  for (let i = 0; i < numRequestBars; i++) {
+    arrOfBars.push(new bar(temp1, L1))
+    L1 += barWidth;
+    temp1 += temp * 2 - 1;
+  }
+
+
+  arrToSort = shuffle(arrOfBars);
+
+  temp2 = temp;
+  for (var i = 0; i < arrToSort.length; i++) {
+    arrToSort[i].x = temp2;
+    temp2 += temp * 2 - 1;
+  }
+}
+
 function draw() {
   if (startBar) {
-    background(0);
+    background(0); //sets background black so that after each run we can't see the one before it. 
 
-    //creates the reset button
+    stroke(255, 200, 0, 255)
+    strokeWeight(1);
+    fill(0, 0);
+    rect(0, 0, width, height)
+    //strokeWeight(1);
+
+
+    //when hit resets everything
     reset.mousePressed(() =>
       location.reload()
     );
 
-    //starts the sorting proccess
+    //when hit starts the sorting proccess
     letsSort.mousePressed(() => {
       sortAllowed = true;
       letsSort.remove();
     });
 
-    //only run this 
+    //if the user wants the line sort to be looped manually loads waits the the next button to be pressed
+    //which makes precede, 'true' so that it allows the sort to run once 
     if (inc) {
       nxt.mousePressed(() => precede = true);
-    }
-
-    //on the 0th pass only - creates an array of lines to sort
-    if (createShuffle) {
-      let arrOfLines = [];
-      for (let i = 0; i <= width; i++) {
-        arrOfLines.push(new lineSegment(i, i)); //high to low;
-      }
-      arrToSort = shuffle(arrOfLines);
-
-
-      for (var i = 0; i < arrToSort.length; i++)
-        arrToSort[i].x = i;
-
-      createShuffle = false;
     }
 
     //draws
@@ -166,9 +192,53 @@ function draw() {
       }
     }
   }
+  stroke(255, 200, 0, 255)
+  strokeWeight(1);
+  fill(0, 0);
+  rect(0, 0, width, height)
 }
 
-//
+/** startScreen
+ *
+ * startScreen - loads the start screen. It loads all of the text that is needed on the screen.  
+ * 
+ * @return Nothing is returned.
+ */
+function startScreen() {
+  quickColor();
+  rect(2.5, 2.5, width - 5, height - 5) //creates the rectangle
+
+  textAlign(CENTER);
+  fill(255);
+  strokeWeight(0);
+  textSize(32);
+  text('Sorter', width / 2, 40);
+  textSize(14)
+  text('Sorts the lines in increasing order using diffrent types of sorting algorithms', width / 2, 65);
+
+  textAlign(LEFT);
+  textSize(14);
+  textStyle(BOLD);
+  text("Select the color:", 10, 330);
+  text("Manually loop:", 10, 405);
+  text("Width/Height", 10, height - 45);
+
+  textSize(12);
+  textStyle(NORMAL);
+  text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
+  text("(yes/no)", 11, 420);
+  text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
+
+  changeBox();
+}
+
+/** changeBox
+ * 
+ *  changeBox - Loads the text that describes how each type of sort works. This draws a box with text on top of anything 
+ *  that was there before
+ *  
+ *  @return Nothing is returned
+ */
 function changeBox() {
   quickColor();
 
@@ -193,55 +263,35 @@ function changeBox() {
   }
 }
 
-//
+/** quickColor
+ *
+ *  quickColor - Has the strokeWeight/stroke color/fill color needed to set the color of boxes on the start screen
+ */
 function quickColor() {
   strokeWeight(5); //border thickness;
   stroke(255, 200, 0, 255); //color of the border; (#FFC800)
   fill(20) //inside;
 }
 
-//
+/** quickTextColor
+ *
+ *  quickTextColor - Has the fill/stroke weight for text
+ */
 function quickTextColor() {
   fill(255);
   strokeWeight(0);
 }
 
-//
-function startScreen() {
-  quickColor();
-  rect(2.5, 2.5, width - 5, height - 5) //creates the rectangle
-
-  textAlign(CENTER);
-  fill(255);
-  strokeWeight(0);
-  textSize(32);
-  text('Sorter', width / 2, 40);
-  textSize(14)
-  text('Sorts the lines in increasing order using diffrent types of sorting algorithms', width / 2, 65);
-
-  textAlign(LEFT);
-  textSize(14);
-  textStyle(BOLD);
-  text("Select the color:", 10, 330);
-  text("Manually loop:", 10, 405);
-  text("Width/Height", 10, height - 45);
-
-  //normal
-  textSize(12);
-  textStyle(NORMAL);
-  text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
-  text("(yes/no)", 11, 420);
-  text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
-
-  changeBox();
-}
-
-
-//Draws all the lines
+/** drawAllLines
+ *
+ * drawAllLines - Displays (draws) all the lines in the arrToSort array
+ */
 function drawAllLines() {
+  rectMode(CENTER);
   for (let j = 0; j < arrToSort.length; j++) {
     arrToSort[j].place();
   }
+  rectMode(CORNER);
 }
 
 //Selection sort
@@ -258,9 +308,9 @@ function selectionSortA(i) {
     arrToSort[i].length = arrToSort[lowestIndex].length;
     arrToSort[lowestIndex].length = rem;
 
-    var rem1 = arrToSort[i].lineColor;
-    arrToSort[i].lineColor = arrToSort[lowestIndex].lineColor;
-    arrToSort[lowestIndex].lineColor = rem1;
+    var rem1 = arrToSort[i].barColor;
+    arrToSort[i].barColor = arrToSort[lowestIndex].barColor;
+    arrToSort[lowestIndex].barColor = rem1;
   }
   return i++;
 }
@@ -277,9 +327,9 @@ function insertionSortA(i) {
         arrToSort[j].length = arrToSort[j - 1].length;
         arrToSort[j - 1].length = rem;
 
-        let rem1 = arrToSort[j].lineColor;
-        arrToSort[j].lineColor = arrToSort[j - 1].lineColor;
-        arrToSort[j - 1].lineColor = rem1;
+        let rem1 = arrToSort[j].barColor;
+        arrToSort[j].barColor = arrToSort[j - 1].barColor;
+        arrToSort[j - 1].barColor = rem1;
 
       } else
         innerLoop = false;
