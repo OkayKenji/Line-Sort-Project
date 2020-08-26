@@ -14,11 +14,11 @@
 /** This is the class that creates a line with a length and an location on an 
  *  x axis
  *  
- *  @param xLoc Where on the x-axis is located
+ *  @param xLoc Where on the x-axis is located. Only used so the correct color is assigned.
  *  @param n The height "n" of the line
  *
  *  When getting the values xLoc and n they should be the name of the object say "y"
- ^  and followed ".x" or ".length" for example y.x; or y.length; 
+ ^  and followed ".x" or ".length" for example y.x; or y.length;
  */
 class bar {
   constructor(xLoc, n) {
