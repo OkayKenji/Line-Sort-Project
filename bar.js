@@ -20,19 +20,22 @@
  *  When getting the values xLoc and n they should be the name of the object say "y"
  ^  and followed ".x" or ".length" for example y.x; or y.length; 
  */
-class lineSegment {
-  constructor(xLoc, n, gradient) {
+class bar {
+  constructor(xLoc, n) {
     this.x = xLoc;
     this.length = n;
-    this.lineColor = this.colorGradient();
+    this.barColor = this.colorGradient();
   }
 
   /**Place, places a line and also keeps track of how much the line was moved. 
    */
   place() {
-    strokeWeight(1);
-    stroke(this.lineColor);
-    line(this.x, height, this.x, height - this.length);
+    strokeWeight(0);
+    stroke(this.barColor);
+    fill(this.barColor);
+    //line(this.x, height, this.x, height - this.length);
+    
+    rect(this.x,height-(this.length/2),barWidth,this.length);
   }
 
   /**colorGradient 
