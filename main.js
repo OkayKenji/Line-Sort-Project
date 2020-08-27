@@ -150,6 +150,12 @@ function draw() {
     drawAllLines();
 
     if (sortAllowed) {
+      
+      if (index<saved.length && (secretCode>0)) {
+      var indicate = new indicator(saved[index]); 
+      indicate.place(); 
+      }
+      
       if (inc) {
         if ((type == "Selection Sort") && precede) {
           selectionSortA(index);
@@ -171,6 +177,8 @@ function draw() {
       }
     }
   }
+  
+  //outline box
   stroke(255, 200, 0, 255)
   strokeWeight(1);
   fill(0, 0);
@@ -332,4 +340,11 @@ function insertionSortA(i) {
     y = true;
   }
   return i++;
+}
+
+var secretCode = 0; 
+function keyPressed() {
+  if (keyCode == 73) 
+   secretCode = 73;  
+
 }
