@@ -1,5 +1,5 @@
-// This is the lineClass; 
-// This is to create line objects. 
+// This is the bar class; 
+// This is to create bar objects. 
 // 
 // v8.2020 
 //
@@ -11,14 +11,14 @@
 // * https://developer.mozilla.org/en-US/docs/Web/JavaScript
 // * The developers of p5.js
 
-/** This is the class that creates a line with a length and an location on an 
+/** This is the class that creates a bar with a length and an location on an 
  *  x axis
  *  
- *  @param xLoc Where on the x-axis is located. Only used so the correct color is assigned.
+ *  @param xLoc Where on the x-axis is located, Only used so the correct color is assigned.
  *  @param n The height "n" of the line
  *
  *  When getting the values xLoc and n they should be the name of the object say "y"
- ^  and followed ".x" or ".length" for example y.x; or y.length;
+ ^  and followed ".x" or ".length" for example y.x; or y.length; 
  */
 class bar {
   constructor(xLoc, n) {
@@ -26,7 +26,11 @@ class bar {
     this.barColor = this.colorGradient(xLoc);
   }
 
-  /**Place, places a line and also keeps track of how much the line was moved. 
+  /**place
+   * Place - Places a bar (rectangle) at centered at x. The y coordinate is found by dividing  
+   * the height (this.length) of the bar in half. This is subtracted from the height of the canvas.
+   *
+   * @param x The x location on the x-axis where the bar should be placed.  
    */
   place(x) {
     strokeWeight(0);
@@ -36,6 +40,9 @@ class bar {
   }
 
   /**colorGradient 
+   * colorGradient - Knowing the xLoc of the bar assigns a color to it so that it can create a white to
+   * the a color forming a gradient. Depending on user input the gradient may be red/blue/green.
+   *
    */
   colorGradient(xLoc) {
     let temp = map(xLoc, width, 0, 0, 255);
