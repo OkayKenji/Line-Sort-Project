@@ -87,31 +87,41 @@ function setup() {
   go = createButton("GO");
   go.position(width / 2, height - 35);
   go.mousePressed(() => {
-
+    
+    //removes unneeded inputs
     sortType.remove()
     go.remove();
     colorSelect.remove();
     incremental.remove();
     screenSize.remove();
     numBarsInput.remove(); 
-
+    clear();
+    
+    //stores the color gradient user wants
     colorScheme = colorSelect.value();
 
+    //if the user wants to manually loop through, sets 'inc' to true and creates a button that a user can
+    //press to increment the loop
     if (incremental.value() == "Yes") {
       inc = true;
       nxt = createButton("\>");
       nxt.position(0, 25);
     } else
       inc = false;
-    clear();
+
+    //creates buttons to start the sort or to reset
     letsSort = createButton("Sort!");
     letsSort.position(0, 25);
     reset = createButton("Reset");
     reset.position(0, 0);
+    
+    //resizes the canvas to the size requested by the user.
     resizeCanvas(parseInt(screenSize.value()), parseInt(screenSize.value()));
 
+    //generates the all of the bars (unsorted)
     barGenerator();
 
+    //helps move off the start screen
     startBar = true;
   });
 
@@ -123,12 +133,7 @@ function setup() {
 function draw() {
   if (startBar) {
     background(0); //sets background black so that after each run we can't see the one before it. 
-
-    stroke(255, 200, 0, 255)
-    strokeWeight(1);
-    fill(0, 0);
-    rect(0, 0, width, height)
-
+    
     //when hit resets everything
     reset.mousePressed(() =>
       location.reload()
@@ -148,15 +153,17 @@ function draw() {
 
     //draws
     drawAllLines();
-
+    
+    //if sorting is allowed, runs the program in it
     if (sortAllowed) {
       
+      //indicator 
       if (index<saved.length && (secretCode>0)) {
       var indicate = new indicator(saved[index]); 
       indicate.place(); 
       }
       
-      if (inc) {
+      if (inc) { //if user wants to manually increment
         if ((type == "Selection Sort") && precede) {
           selectionSortA(index);
           index++;
@@ -166,7 +173,7 @@ function draw() {
         }
 
         precede = false;
-      } else {
+      } else { //automatically increment
         if (type == "Selection Sort") {
           selectionSortA(index);
           index++;
@@ -178,7 +185,7 @@ function draw() {
     }
   }
   
-  //outline box
+  //outline box (removes black bars along the sides)
   stroke(255, 200, 0, 255)
   strokeWeight(1);
   fill(0, 0);
@@ -308,7 +315,13 @@ function drawAllLines() {
   rectMode(CORNER);
 }
 
-//Selection sort
+/** selectionSortA 
+ *
+ * selectionSortA - Uses the selection sort algorithm to sort the bars. 
+ *
+ * @param The current index. 
+ * @return The next index
+ */ 
 function selectionSortA(i) {
   if (i < arrToSort.length) {
     var lowestIndex = i;
@@ -324,7 +337,13 @@ function selectionSortA(i) {
   return i++;
 }
 
-//Insertion Sort
+/** insertionSortA 
+ *
+ * insertionSortA - Uses the insertion sort algorithm to sort the bars. 
+ *
+ * @param The current index. 
+ * @return The next index
+ */ 
 function insertionSortA(i) {
   let innerLoop = true;
   if (i < arrToSort.length) {
