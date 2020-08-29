@@ -4,6 +4,7 @@
 // Implemented sorts: 
 //  * Selection sort
 //  * Insertion sort
+//  * Merge Sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
@@ -30,6 +31,7 @@
 // @param numRequestedBars  The number of bars the user wants
 // @param barWidth          The width the bar has to be to fit all on the screen.
 // @param saved             An array that stores the where bars should be located on x-axis. 
+// @paran tempArr           An array that stores an array temporarily 
 let sortAllowed = false;
 let startBar = false;
 let createShuffle = true;
@@ -42,6 +44,7 @@ let precede = false;
 let numRequestBars;
 let barWidth;
 let saved = [];
+let tempArr = [];
 
 let go, sortType, reset, letsSort, colorSelect, incremental, nxt; //buttons/non-text inputs
 let screenSize, numBarsInput; //text input
@@ -55,6 +58,7 @@ function setup() {
   sortType.position(10, 85);
   sortType.option('Selection Sort');
   sortType.option('Insertion Sort');
+  sortType.option('Merge Sort');
   sortType.changed(changeBox);
 
   //creates the drop down menu for what color scheme user wants
@@ -79,7 +83,7 @@ function setup() {
 
   //input for the number of bars
   numBarsInput = createInput('512');
-  numBarsInput.position(320,315);
+  numBarsInput.position(320, 315);
   numBarsInput.size(55)
 
   //Removes the start screen and all irrelvent input elements. 
@@ -87,16 +91,16 @@ function setup() {
   go = createButton("GO");
   go.position(width / 2, height - 35);
   go.mousePressed(() => {
-    
+
     //removes unneeded inputs
     sortType.remove()
     go.remove();
     colorSelect.remove();
     incremental.remove();
     screenSize.remove();
-    numBarsInput.remove(); 
+    numBarsInput.remove();
     clear();
-    
+
     //stores the color gradient user wants
     colorScheme = colorSelect.value();
 
@@ -114,7 +118,7 @@ function setup() {
     letsSort.position(0, 25);
     reset = createButton("Reset");
     reset.position(0, 0);
-    
+
     //resizes the canvas to the size requested by the user.
     resizeCanvas(parseInt(screenSize.value()), parseInt(screenSize.value()));
 
@@ -133,7 +137,7 @@ function setup() {
 function draw() {
   if (startBar) {
     background(0); //sets background black so that after each run we can't see the one before it. 
-    
+
     //when hit resets everything
     reset.mousePressed(() =>
       location.reload()
@@ -153,22 +157,25 @@ function draw() {
 
     //draws
     drawAllLines();
-    
+
     //if sorting is allowed, runs the program in it
     if (sortAllowed) {
-      
+
       //indicator 
-      if (index<saved.length && (secretCode>0)) {
-      var indicate = new indicator(saved[index]); 
-      indicate.place(); 
+      if (index < saved.length && (secretCode > 0)) {
+        var indicate = new indicator(saved[index]);
+        indicate.place();
       }
-      
+
       if (inc) { //if user wants to manually increment
         if ((type == "Selection Sort") && precede) {
           selectionSortA(index);
           index++;
         } else if ((type == "Insertion Sort") && precede) {
           insertionSortA(index);
+          index++;
+        } else if ((type == "Merge Sort") && precede) {
+          mergeSortA(index);
           index++;
         }
 
@@ -180,11 +187,14 @@ function draw() {
         } else if (type == "Insertion Sort") {
           insertionSortA(index);
           index++;
+        } else if (type == "Merge Sort") {
+          mergeSortA(index);
+          index++;
         }
       }
     }
   }
-  
+
   //outline box (removes black bars along the sides)
   stroke(255, 200, 0, 255)
   strokeWeight(1);
@@ -321,7 +331,7 @@ function drawAllLines() {
  *
  * @param The current index. 
  * @return The next index
- */ 
+ */
 function selectionSortA(i) {
   if (i < arrToSort.length) {
     var lowestIndex = i;
@@ -330,9 +340,9 @@ function selectionSortA(i) {
         lowestIndex = j;
       }
     }
-    var rem = arrToSort[i]; 
+    var rem = arrToSort[i];
     arrToSort[i] = arrToSort[lowestIndex];
-    arrToSort[lowestIndex] = rem; 
+    arrToSort[lowestIndex] = rem;
   }
   return i++;
 }
@@ -343,7 +353,7 @@ function selectionSortA(i) {
  *
  * @param The current index. 
  * @return The next index
- */ 
+ */
 function insertionSortA(i) {
   let innerLoop = true;
   if (i < arrToSort.length) {
@@ -361,9 +371,97 @@ function insertionSortA(i) {
   return i++;
 }
 
-var secretCode = 0; 
+/** mergeSortA
+ *  
+ * mergeSortA - Uses the merge sort algorithm to sort the bars. 
+ *
+ * @param z Index
+ */
+function mergeSortA(z) {
+  //arrToSort
+  let setOfSubarrays = [];
+  if (z == 0) {
+    setOfSubarrays = array1DTo2DA();
+  } else {
+    setOfSubarrays = tempArr;
+  }
+  let newArr = [];
+  for (let i = 0; i < setOfSubarrays.length; i += 2) {
+    if (setOfSubarrays[i + 1]) {
+      newArr.push(mergeArrA(setOfSubarrays[i], setOfSubarrays[i + 1]));
+    } else {
+      newArr.push(setOfSubarrays[i]);
+    }
+  }
+  tempArr = newArr;
+  arrToSort = array2DTo1DA(tempArr)
+}
+
+
+/** mergeArrA
+ *
+ * mergeArr - Merges two arrays. Merge means to take in two sorted arrays and combines them into one sorted array. 
+ *
+ * @param arrA
+ * @param arrB
+ *
+ * @return A merged array. 
+ */
+function mergeArrA(arrA, arrB) {
+  let arrC = [];
+  while (arrA.length > 0 && arrB.length > 0) {
+    if (arrA[0].length < arrB[0].length) {
+      arrC.push(arrA[0]);
+      arrA.shift();
+    } else {
+      arrC.push(arrB[0]);
+      arrB.shift();
+    }
+  }
+  while (arrA.length > 0)
+    arrC.push(arrA.shift());
+  while (arrB.length > 0)
+    arrC.push(arrB.shift());
+  return arrC;
+}
+
+/** array1DTo2DA
+ *
+ * array1DTo2DA - Turns a 1D array into 2D array. "makes the array vertical"
+ *
+ * @return The 2D array that has all the values of the "arrToSort" array.
+ */
+function array1DTo2DA() {
+  let arr2D = [];
+  for (let i = 0; i < arrToSort.length; i++) {
+    let newArray = [arrToSort[i]]
+    arr2D.push(newArray);
+  }
+  return arr2D;
+}
+
+/** array2DTo1DA
+ *
+ * array2DTo1DA - Turns a 2D array into 1D array. 
+ *
+ * @param arr The 2D array
+ *
+ * @return The 1D array that has all the values of the input
+ */
+function array2DTo1DA(arr2D) {
+  let arr = [];
+  for (let i = 0; i < arr2D.length; i++) {
+    for (let j = 0; j < arr2D[i].length; j++) {
+      arr.push(arr2D[i][j]);
+    }
+  }
+  return arr;
+}
+
+var secretCode = 0;
+
 function keyPressed() {
-  if (keyCode == 73) 
-   secretCode = 73;  
+  if (keyCode == 73)
+    secretCode = 73;
 
 }
