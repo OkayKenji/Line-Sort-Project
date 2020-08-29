@@ -2,7 +2,7 @@
 //i.e. these can only sort interger arrays and will not sort the lines
 //see the "main.js" for the actual ones
 //
-//v8.20.2020
+// v8.2020
 //
 // Credits:
 //  * Wikipedia
@@ -17,6 +17,10 @@
  *    index
  *  - If there is one, swaps postions with it
  *  - Then it moves the the second index, does step 2 again (loops till the end)
+ *
+ * @param arr The array to sort.
+ * 
+ * @return A sorted array.
  */
 function selectionSort(arr) {
   for (var i = 0; i < arr.length; i++) {
@@ -39,6 +43,10 @@ function selectionSort(arr) {
  *  - Starts at the second index
  *  - Looks to the left, and swaps postion with it if its less then the one to the left
  *  - Keeps moving left until its at the correct spot
+ *
+ * @param arr The array to sort.
+ * 
+ * @return A sorted array.
  */
 function insertionSort(arr) {
   let y = true;
@@ -57,8 +65,19 @@ function insertionSort(arr) {
   return arr;
 }
 
-
-
+/** Merge sort
+ *  
+ * How merge sort works:
+ *  - First seperates an array into indviudal subarrays containing one element
+ *  - Merges each of them (merge takes in two sorted arrays and outputs a sorted array that combines them)
+ *  - Then merges the the outputs from the previous merges until there's only one array left
+ *
+ * @param arr The array that needs to be sorted
+ * @param index Current index
+ *
+ * @return If done sorting returns the sorted array.
+ * @return If not done sorting calls itself again, semding the unsorted array as well as the next index
+ */
 function mergeSort(arr, index) {
   let setOfSubarrays = [];
   if (index == 0) {
@@ -84,10 +103,14 @@ function mergeSort(arr, index) {
 }
 
 
-/**
+/** mergeArr
  *
+ * mergeArr - Merges two arrays. Merge means to take in two sorted arrays and combines them into one sorted array. 
  *
+ * @param arrA
+ * @param arrB
  *
+ * @return A merged array. 
  */
 function mergeArr(arrA, arrB) {
   let arrC = [];
@@ -113,8 +136,13 @@ function mergeArr(arrA, arrB) {
   return arrC;
 }
 
-/**
+/** array1DTo2D
  *
+ * array1DTo2D - Turns a 1D array into 2D array. "makes the array vertical"
+ *
+ * @param arr The 1D array
+ *
+ * @return The 2D array that has all the values of the input
  */
 function array1DTo2D(arr) {
   let arr2D = [];
@@ -125,8 +153,13 @@ function array1DTo2D(arr) {
   return arr2D;
 }
 
-/**
+/** array2DTo1D
  *
+ * array2DTo1D - Turns a 2D array into 1D array. 
+ *
+ * @param arr The 2D array
+ *
+ * @return The 1D array that has all the values of the input
  */
 function array2DTo1D(arr2D) {
   let arr = [];
@@ -138,8 +171,17 @@ function array2DTo1D(arr2D) {
   return arr;
 }
 
-/**
+/** Heap sort
+ *  
+ * How heap sort works:
+ *  - Creates a "max heap"
+ *  - Swaps the first and last element of the unsortd part of the array
+ *  - After the swap the last element of the unsorted array becomes part of the sorted array.
+ *  - Then goes though the unsorted part of the array and makes it into a max heap again
  *
+ * @param arr The array that needs to be sorted
+ *
+ * @return The sorted array
  */
 function heapSort(arr) {
   let heapArr = generateMaxHeap(arr);
@@ -149,7 +191,7 @@ function heapSort(arr) {
     let temp = heapArr[0];
     heapArr[0] = heapArr[i];
     heapArr[i] = temp;
-    
+
     let sorted = [];
     for (let j = i; j < arr.length; j++) {
       sorted.push(heapArr[j]);
@@ -161,7 +203,7 @@ function heapSort(arr) {
       reHeap.push(heapArr[k]);
     }
     reHeap = generateMaxHeap(reHeap)
-    
+
     heapArr = [];
 
     for (let m = 0; m < i; m++) {
@@ -176,8 +218,16 @@ function heapSort(arr) {
   return heapArr;
 }
 
-/**
+/** generateMaxHeap
  *
+ * generateMaxHeap - Makes a "max heap". A max heap is a way of structuring data. Its in a binary tree. A binary tree
+ * is a structure where a parent element has two other child elements connected to it. In a max heap, the parent  
+ * element is always bigger then the child element. This structure can be sorted in an array such as the child element 
+ * are alwasys (2(i)+1 or 2(i)+2) where i is the index of the parent. 
+ *
+ * @param arr The array to make into a max heap.
+ *
+ * @return The max heap. 
  */
 function generateMaxHeap(arr) {
   let swapOccured = false;
