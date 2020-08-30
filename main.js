@@ -4,6 +4,7 @@
 // Implemented sorts: 
 //  * Selection sort
 //  * Insertion sort
+//  * Merge Sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
@@ -30,6 +31,7 @@
 // @param numRequestedBars  The number of bars the user wants
 // @param barWidth          The width the bar has to be to fit all on the screen.
 // @param saved             An array that stores the where bars should be located on x-axis. 
+// @paran tempArr           An array that stores an array temporarily 
 let sortAllowed = false;
 let startBar = false;
 let createShuffle = true;
@@ -42,6 +44,7 @@ let precede = false;
 let numRequestBars;
 let barWidth;
 let saved = [];
+let tempArr = [];
 
 let go, sortType, reset, letsSort, colorSelect, incremental, nxt; //buttons/non-text inputs
 let screenSize, numBarsInput; //text input
@@ -55,6 +58,8 @@ function setup() {
   sortType.position(10, 85);
   sortType.option('Selection Sort');
   sortType.option('Insertion Sort');
+  sortType.option('Merge Sort');
+  sortType.option('Heap Sort');
   sortType.changed(changeBox);
 
   //creates the drop down menu for what color scheme user wants
@@ -79,7 +84,7 @@ function setup() {
 
   //input for the number of bars
   numBarsInput = createInput('512');
-  numBarsInput.position(320,315);
+  numBarsInput.position(320, 315);
   numBarsInput.size(55)
 
   //Removes the start screen and all irrelvent input elements. 
@@ -87,16 +92,16 @@ function setup() {
   go = createButton("GO");
   go.position(width / 2, height - 35);
   go.mousePressed(() => {
-    
+
     //removes unneeded inputs
     sortType.remove()
     go.remove();
     colorSelect.remove();
     incremental.remove();
     screenSize.remove();
-    numBarsInput.remove(); 
+    numBarsInput.remove();
     clear();
-    
+
     //stores the color gradient user wants
     colorScheme = colorSelect.value();
 
@@ -114,7 +119,7 @@ function setup() {
     letsSort.position(0, 25);
     reset = createButton("Reset");
     reset.position(0, 0);
-    
+
     //resizes the canvas to the size requested by the user.
     resizeCanvas(parseInt(screenSize.value()), parseInt(screenSize.value()));
 
@@ -123,6 +128,10 @@ function setup() {
 
     //helps move off the start screen
     startBar = true;
+
+    if (type == "Heap Sort") {
+      index = arrToSort.length - 1
+    }
   });
 
   //loads the start screen and the visuals needed for it
@@ -133,7 +142,7 @@ function setup() {
 function draw() {
   if (startBar) {
     background(0); //sets background black so that after each run we can't see the one before it. 
-    
+
     //when hit resets everything
     reset.mousePressed(() =>
       location.reload()
@@ -153,16 +162,16 @@ function draw() {
 
     //draws
     drawAllLines();
-    
+
     //if sorting is allowed, runs the program in it
     if (sortAllowed) {
-      
+
       //indicator 
-      if (index<saved.length && (secretCode>0)) {
-      var indicate = new indicator(saved[index]); 
-      indicate.place(); 
+      if (index < saved.length && (secretCode > 0)) {
+        var indicate = new indicator(saved[index]);
+        indicate.place();
       }
-      
+
       if (inc) { //if user wants to manually increment
         if ((type == "Selection Sort") && precede) {
           selectionSortA(index);
@@ -170,8 +179,13 @@ function draw() {
         } else if ((type == "Insertion Sort") && precede) {
           insertionSortA(index);
           index++;
+        } else if ((type == "Merge Sort") && precede) {
+          mergeSortA(index);
+          index++;
+        } else if ((type == "Heap Sort") && precede) {
+          heapSortA(index)
+          index--;
         }
-
         precede = false;
       } else { //automatically increment
         if (type == "Selection Sort") {
@@ -180,11 +194,17 @@ function draw() {
         } else if (type == "Insertion Sort") {
           insertionSortA(index);
           index++;
+        } else if (type == "Merge Sort") {
+          mergeSortA(index);
+          index++;
+        } else if (type == "Heap Sort") {
+          heapSortA(index)
+          index --;
         }
       }
     }
   }
-  
+
   //outline box (removes black bars along the sides)
   stroke(255, 200, 0, 255)
   strokeWeight(1);
@@ -254,6 +274,11 @@ function changeBox() {
   } else if (type == "Insertion Sort") {
     text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
     index = 1;
+  } else if (type == "Merge Sort") {
+    text('ABCDEF', 132, 115);
+    index = 0;
+  } else if (type == "Heap Sort") {
+    text('XYZ', 132, 115);
   } else {
     console.log("ERROR!");
   }
@@ -321,7 +346,7 @@ function drawAllLines() {
  *
  * @param The current index. 
  * @return The next index
- */ 
+ */
 function selectionSortA(i) {
   if (i < arrToSort.length) {
     var lowestIndex = i;
@@ -330,9 +355,9 @@ function selectionSortA(i) {
         lowestIndex = j;
       }
     }
-    var rem = arrToSort[i]; 
+    var rem = arrToSort[i];
     arrToSort[i] = arrToSort[lowestIndex];
-    arrToSort[lowestIndex] = rem; 
+    arrToSort[lowestIndex] = rem;
   }
   return i++;
 }
@@ -343,7 +368,7 @@ function selectionSortA(i) {
  *
  * @param The current index. 
  * @return The next index
- */ 
+ */
 function insertionSortA(i) {
   let innerLoop = true;
   if (i < arrToSort.length) {
@@ -361,9 +386,119 @@ function insertionSortA(i) {
   return i++;
 }
 
-var secretCode = 0; 
+var test = true;
+/** Heap sort
+ *  
+ * How heap sort works:
+ *  - Creates a "max heap"
+ *  - Swaps the first and last element of the unsortd part of the array
+ *  - After the swap the last element of the unsorted array becomes part of the sorted array.
+ *  - Then goes though the unsorted part of the array and makes it into a max heap again
+ *
+ * @param arr The array that needs to be sorted
+ *
+ * @return The sorted array
+ */
+function heapSortA(i) {
+  let heapArr;
+  if ((i == arrToSort.length - 1)&&test) {
+    heapArr = generateMaxHeapA(arrToSort);
+    test = false; 
+    arrToSort = heapArr; 
+    index++;
+  } else if (i>0) {
+    //swaps 
+    heapArr = arrToSort;
+    
+    let temp = heapArr[0];
+    heapArr[0] = heapArr[i];
+    heapArr[i] = temp;
+
+    let sorted = [];
+    for (let j = i; j < arrToSort.length; j++) {
+      sorted.push(heapArr[j]);
+    }
+
+    let reHeap = [];
+
+    for (let k = 0; k < i; k++) {
+      reHeap.push(heapArr[k]);
+    }
+    reHeap = generateMaxHeapA(reHeap)
+
+    heapArr = [];
+
+    for (let m = 0; m < i; m++) {
+      heapArr.push(reHeap[m]);
+    }
+
+    for (let n = 0; n < sorted.length; n++) {
+      heapArr.push(sorted[n]);
+    }
+
+  
+    arrToSort = heapArr;
+  }
+  return "ERROR"; 
+}
+
+/** generateMaxHeap
+ *
+ * generateMaxHeap - Makes a "max heap". A max heap is a way of structuring data. Its in a binary tree. A binary tree
+ * is a structure where a parent element has two other child elements connected to it. In a max heap, the parent  
+ * element is always bigger then the child element. This structure can be sorted in an array such as the child element 
+ * are alwasys (2(i)+1 or 2(i)+2) where i is the index of the parent. 
+ *
+ * @param arr The array to make into a max heap.
+ *
+ * @return The max heap. 
+ */
+function generateMaxHeapA(arr) {
+  let swapOccured = false;
+  for (let i = 1; i < arr.length; i++) {
+    if (i % 2 == 0) {
+      if (arr[i].length > arr[(i - 2) / 2].length) {
+        let temp = arr[i]
+        arr[i] = arr[(i - 2) / 2]
+        arr[(i - 2) / 2] = temp;
+        swapOccured = true;
+      }
+    } else {
+      if (arr[i].length > arr[(i - 1) / 2].length) {
+        let temp = arr[i]
+        arr[i] = arr[(i - 1) / 2]
+        arr[(i - 1) / 2] = temp;
+        swapOccured = true;
+      }
+    }
+
+    if (swapOccured) {
+      for (let j = i; j > 0; j--) {
+        if (j % 2 == 0) {
+          if (arr[j].length > arr[(j - 2) / 2].length) {
+            let temp = arr[j]
+            arr[j] = arr[(j - 2) / 2]
+            arr[(j - 2) / 2] = temp;
+          }
+        } else {
+          if (arr[j].length > arr[(j - 1) / 2].length) {
+            let temp = arr[j]
+            arr[j] = arr[(j - 1) / 2]
+            arr[(j - 1) / 2] = temp;
+          }
+        }
+      }
+    }
+    swapOccured = false;
+  }
+  return arr;
+}
+
+
+var secretCode = 0;
+
 function keyPressed() {
-  if (keyCode == 73) 
-   secretCode = 73;  
+  if (keyCode == 73)
+    secretCode = 73;
 
 }
