@@ -59,6 +59,7 @@ function setup() {
   sortType.option('Selection Sort');
   sortType.option('Insertion Sort');
   sortType.option('Merge Sort');
+  sortType.option('Heap Sort');
   sortType.changed(changeBox);
 
   //creates the drop down menu for what color scheme user wants
@@ -127,6 +128,10 @@ function setup() {
 
     //helps move off the start screen
     startBar = true;
+
+    if (type == "Heap Sort") {
+      index = arrToSort.length - 1
+    }
   });
 
   //loads the start screen and the visuals needed for it
@@ -177,8 +182,10 @@ function draw() {
         } else if ((type == "Merge Sort") && precede) {
           mergeSortA(index);
           index++;
+        } else if ((type == "Heap Sort") && precede) {
+          heapSortA(index)
+          index--;
         }
-
         precede = false;
       } else { //automatically increment
         if (type == "Selection Sort") {
@@ -190,6 +197,9 @@ function draw() {
         } else if (type == "Merge Sort") {
           mergeSortA(index);
           index++;
+        } else if (type == "Heap Sort") {
+          heapSortA(index)
+          index --;
         }
       }
     }
@@ -264,6 +274,11 @@ function changeBox() {
   } else if (type == "Insertion Sort") {
     text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
     index = 1;
+  } else if (type == "Merge Sort") {
+    text('ABCDEF', 132, 115);
+    index = 0;
+  } else if (type == "Heap Sort") {
+    text('XYZ', 132, 115);
   } else {
     console.log("ERROR!");
   }
@@ -457,6 +472,115 @@ function array2DTo1DA(arr2D) {
   }
   return arr;
 }
+
+  var test = true;
+/** Heap sort
+ *  
+ * How heap sort works:
+ *  - Creates a "max heap"
+ *  - Swaps the first and last element of the unsortd part of the array
+ *  - After the swap the last element of the unsorted array becomes part of the sorted array.
+ *  - Then goes though the unsorted part of the array and makes it into a max heap again
+ *
+ * @param arr The array that needs to be sorted
+ *
+ * @return The sorted array
+ */
+function heapSortA(i) {
+  let heapArr;
+  if ((i == arrToSort.length - 1)&&test) {
+    heapArr = generateMaxHeapA(arrToSort);
+    test = false; 
+    arrToSort = heapArr; 
+    index++;
+  } else if (i>0) {
+    //swaps 
+    heapArr = arrToSort;
+    
+    let temp = heapArr[0];
+    heapArr[0] = heapArr[i];
+    heapArr[i] = temp;
+
+    let sorted = [];
+    for (let j = i; j < arrToSort.length; j++) {
+      sorted.push(heapArr[j]);
+    }
+
+    let reHeap = [];
+
+    for (let k = 0; k < i; k++) {
+      reHeap.push(heapArr[k]);
+    }
+    reHeap = generateMaxHeapA(reHeap)
+
+    heapArr = [];
+
+    for (let m = 0; m < i; m++) {
+      heapArr.push(reHeap[m]);
+    }
+
+    for (let n = 0; n < sorted.length; n++) {
+      heapArr.push(sorted[n]);
+    }
+
+  
+    arrToSort = heapArr;
+  }
+  return "ERROR"; 
+}
+
+/** generateMaxHeap
+ *
+ * generateMaxHeap - Makes a "max heap". A max heap is a way of structuring data. Its in a binary tree. A binary tree
+ * is a structure where a parent element has two other child elements connected to it. In a max heap, the parent  
+ * element is always bigger then the child element. This structure can be sorted in an array such as the child element 
+ * are alwasys (2(i)+1 or 2(i)+2) where i is the index of the parent. 
+ *
+ * @param arr The array to make into a max heap.
+ *
+ * @return The max heap. 
+ */
+function generateMaxHeapA(arr) {
+  let swapOccured = false;
+  for (let i = 1; i < arr.length; i++) {
+    if (i % 2 == 0) {
+      if (arr[i].length > arr[(i - 2) / 2].length) {
+        let temp = arr[i]
+        arr[i] = arr[(i - 2) / 2]
+        arr[(i - 2) / 2] = temp;
+        swapOccured = true;
+      }
+    } else {
+      if (arr[i].length > arr[(i - 1) / 2].length) {
+        let temp = arr[i]
+        arr[i] = arr[(i - 1) / 2]
+        arr[(i - 1) / 2] = temp;
+        swapOccured = true;
+      }
+    }
+
+    if (swapOccured) {
+      for (let j = i; j > 0; j--) {
+        if (j % 2 == 0) {
+          if (arr[j].length > arr[(j - 2) / 2].length) {
+            let temp = arr[j]
+            arr[j] = arr[(j - 2) / 2]
+            arr[(j - 2) / 2] = temp;
+          }
+        } else {
+          if (arr[j].length > arr[(j - 1) / 2].length) {
+            let temp = arr[j]
+            arr[j] = arr[(j - 1) / 2]
+            arr[(j - 1) / 2] = temp;
+          }
+        }
+      }
+    }
+    swapOccured = false;
+  }
+  return arr;
+}
+
 
 var secretCode = 0;
 
