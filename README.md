@@ -7,4 +7,11 @@ v1.0 - Initial release
 
 v1.1 - Added insertion sort and fixed a minor bug causing display issues on the edge bars.
 
-v2.0 - Overhaul of code supporting the program. Such that (1) Sorting algorithms swap elements of the array rather then properties of the elements of the arrays. (2) Enables custom number of bars to be set. In addition this update introduces merge and heap sorting. 
+v2.0.0 - Overhaul of code supporting the program. Such that:
+ - Sorting algorithms swap elements of the array rather than properties of the elements of the arrays. 
+ - Internally lines are now referred to as bars.
+ - Although to set up the list of bars the x-coordinates are used, they are only used to assign the proper color to the bar. 
+ - Enables custom number of bars to be set. 
+ - Many other internal changes
+ 
+  In addition, this update introduces merge and heap sorting.
