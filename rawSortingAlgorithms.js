@@ -196,7 +196,7 @@ function heapSort(arr) {
     for (let j = i; j < arr.length; j++) {
       sorted.push(heapArr[j]);
     }
-    //console.log(sorted);
+    
     let reHeap = [];
 
     for (let k = 0; k < i; k++) {
@@ -231,7 +231,7 @@ function heapSort(arr) {
  */
 function generateMaxHeap(arr) {
   let swapOccured = false;
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 1; i < arr.length; i++) {
     if (i % 2 == 0) {
       if (arr[i] > arr[(i - 2) / 2]) {
         let temp = arr[i]
