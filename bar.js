@@ -36,7 +36,7 @@ class bar {
     strokeWeight(0);
     stroke(this.barColor);
     fill(this.barColor);
-    rect(x,height-(this.length/2),barWidth,this.length);
+    rect(x, height - (this.length / 2), barWidth, this.length);
   }
 
   /**colorGradient 
