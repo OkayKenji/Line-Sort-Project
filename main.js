@@ -5,7 +5,6 @@
 //  * Selection sort
 //  * Insertion sort
 //  * Merge Sort
-//  * Heap Sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
@@ -270,16 +269,16 @@ function changeBox() {
   text(type, 130, 100);
   textStyle(NORMAL);
   if (type == "Selection Sort") {
-    text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Sawps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+    text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Swaps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
     index = 0;
   } else if (type == "Insertion Sort") {
-    text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower then itself.\n-These steps repeat till looped though every bar.', 132, 115);
+    text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower than itself.\n-These steps repeat till looped though every bar.', 132, 115);
     index = 1;
   } else if (type == "Merge Sort") {
-    text('ABCDEF', 132, 115);
+    text('This is a type of sorting where...\n-Splits the list of bars into individual bars.\n-\"Merges\" two bars next to each other to form a list with two bars.\n-The new list is sorted so that the sorted bar is first.\n-Then two lists (of two bars) are merged together so that all bars\nare in order.\n-Repeat until back to one list.', 132, 115);
     index = 0;
   } else if (type == "Heap Sort") {
-    text('XYZ', 132, 115);
+    text('This is a type of sorting where...\n-A max heap (binary tree). This is a structure where a parent\nelement has two other child elements connected to it. The parent\nelement is always bigger then the child element.\n-After this the last bar of the unsorted area and the first bar is \nswapped.\n-After the flip, the original first bar (the one that\'s last now) is part of\nthe sorted area.\n-Then remake the max heap for the unsorted area and repeat!', 132, 115);
   } else {
     console.log("ERROR!");
   }
@@ -474,24 +473,18 @@ function array2DTo1DA(arr2D) {
   return arr;
 }
 
-var test = true;
-/** Heap sort
+var notRanOnce = true;
+/** heapSortA
  *  
- * How heap sort works:
- *  - Creates a "max heap"
- *  - Swaps the first and last element of the unsortd part of the array
- *  - After the swap the last element of the unsorted array becomes part of the sorted array.
- *  - Then goes though the unsorted part of the array and makes it into a max heap again
+ * heapSortA - Uses the heap sort algorithm to sort the bars. 
  *
- * @param arr The array that needs to be sorted
- *
- * @return The sorted array
+ * @param i Index
  */
 function heapSortA(i) {
   let heapArr;
-  if ((i == arrToSort.length - 1) && test) {
+  if ((i == arrToSort.length - 1) && notRanOnce) {
     heapArr = generateMaxHeapA(arrToSort);
-    test = false;
+    notRanOnce = false;
     arrToSort = heapArr;
     index++;
   } else if (i > 0) {
@@ -530,9 +523,9 @@ function heapSortA(i) {
   return "ERROR";
 }
 
-/** generateMaxHeap
+/** generateMaxHeapA
  *
- * generateMaxHeap - Makes a "max heap". A max heap is a way of structuring data. Its in a binary tree. A binary tree
+ * generateMaxHeapA - Makes a "max heap". A max heap is a way of structuring data. Its in a binary tree. A binary tree
  * is a structure where a parent element has two other child elements connected to it. In a max heap, the parent  
  * element is always bigger then the child element. This structure can be sorted in an array such as the child element 
  * are alwasys (2(i)+1 or 2(i)+2) where i is the index of the parent. 
