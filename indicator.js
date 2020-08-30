@@ -38,7 +38,7 @@ class indicator {
     let x3 = this.xLoc + barWidth / 2;
     let y3 = y1 - 20;
     triangle(x1, y1, x2, y2, x3, y3)
-    
+
     //draws a rectangle 'stem of arrow'
     rectMode(CENTER);
     rect(this.xLoc, y1 - 40, barWidth / 2, 50);
