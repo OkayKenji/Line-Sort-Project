@@ -5,6 +5,7 @@
 //  * Selection sort
 //  * Insertion sort
 //  * Merge Sort
+//  * Heap Sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
@@ -199,7 +200,7 @@ function draw() {
           index++;
         } else if (type == "Heap Sort") {
           heapSortA(index)
-          index --;
+          index--;
         }
       }
     }
@@ -473,7 +474,7 @@ function array2DTo1DA(arr2D) {
   return arr;
 }
 
-  var test = true;
+var test = true;
 /** Heap sort
  *  
  * How heap sort works:
@@ -488,15 +489,15 @@ function array2DTo1DA(arr2D) {
  */
 function heapSortA(i) {
   let heapArr;
-  if ((i == arrToSort.length - 1)&&test) {
+  if ((i == arrToSort.length - 1) && test) {
     heapArr = generateMaxHeapA(arrToSort);
-    test = false; 
-    arrToSort = heapArr; 
+    test = false;
+    arrToSort = heapArr;
     index++;
-  } else if (i>0) {
+  } else if (i > 0) {
     //swaps 
     heapArr = arrToSort;
-    
+
     let temp = heapArr[0];
     heapArr[0] = heapArr[i];
     heapArr[i] = temp;
@@ -523,10 +524,10 @@ function heapSortA(i) {
       heapArr.push(sorted[n]);
     }
 
-  
+
     arrToSort = heapArr;
   }
-  return "ERROR"; 
+  return "ERROR";
 }
 
 /** generateMaxHeap
