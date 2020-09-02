@@ -269,3 +269,82 @@ function generateMaxHeap(arr) {
   }
   return arr;
 }
+
+/** Quick sort
+ *  
+ * How quick sort works:
+ *  - Selects a pivot point, typically the last element of an array.
+ *  - Makes a new subarray such that all values less then the pivet are in one array and values greater then it are in another.
+ *  - Put the subarray of lesser values to the left of the pivet, greater to the right. Repeat these for each subarray and subarray of the subarray and 
+ *    so on.
+ *
+ * @param arr The array that needs to be sorted
+ * @param indexx Index
+ *
+ * @return The sorted array. 
+ */
+function quickSort(arr, index) {
+  let arr2D = [];
+  if (index == 0)
+    arr2D = [arr];
+  else
+    arr2D = arr;
+  let newArr = [];
+  for (let i = 0; i < arr2D.length; i++) {
+    let leftArr = [];
+    let centre = [arr2D[i][arr2D[i].length - 1]];
+    let rightArr = [];
+    if (arr2D[i].length > 1) {
+      for (let j = 0; j < arr2D[i].length - 1; j++) {
+        if (arr2D[i][j] <= centre[0]) {
+          leftArr.push(arr2D[i][j])
+        } else if (arr2D[i][j] > centre[0]) {
+          rightArr.push(arr2D[i][j])
+        }
+      }
+      if (leftArr[0] !== undefined) {
+        newArr.push(leftArr)
+      }
+      newArr.push(centre)
+      if (rightArr[0] !== undefined) {
+        newArr.push(rightArr)
+      }
+    } else {
+      newArr.push(arr2D[i])
+    }
+  }
+
+  arr2D = newArr;
+  let arrGreat = false;
+  for (let ele of arr2D) {
+    if (ele.length > 1) {
+      arrGreat = true;
+    }
+  }
+  index++;
+  if (arrGreat)
+    return quickSort(arr2D, index)
+  else
+    return array2DTo1D(arr2D);
+}
+
+/**  returnRandomArr
+ *
+ * returnRandomArr - Returns an array of random numbers
+ *
+ * @param num The number of numbers that should be in the array.
+ * @param repeats If true, there can be repeats (range must be used too). If false no repeated values. 
+ * @param range An array [min,max]. This must be given as a param is repeats is true.
+ *
+ */
+function returnRandomArr(num, repeats, range) {
+  let arr = [];
+  for (let i = 0; i < num; i++) {
+    if (!repeats)
+      arr.push(i)
+    else
+      arr.push(parseInt(random(range[0], range[1])));
+  }
+  arr = shuffle(arr);
+  return arr;
+}
