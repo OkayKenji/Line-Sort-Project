@@ -5,6 +5,8 @@
 //  * Selection sort
 //  * Insertion sort
 //  * Merge Sort
+//  * Heap Sort
+//  * Quick Sort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
@@ -60,6 +62,7 @@ function setup() {
   sortType.option('Insertion Sort');
   sortType.option('Merge Sort');
   sortType.option('Heap Sort');
+  sortType.option('Quick Sort');
   sortType.changed(changeBox);
 
   //creates the drop down menu for what color scheme user wants
@@ -173,36 +176,56 @@ function draw() {
       }
 
       if (inc) { //if user wants to manually increment
-        if ((type == "Selection Sort") && precede) {
-          selectionSortA(index);
-          index++;
-        } else if ((type == "Insertion Sort") && precede) {
-          insertionSortA(index);
-          index++;
-        } else if ((type == "Merge Sort") && precede) {
-          mergeSortA(index);
-          index++;
-        } else if ((type == "Heap Sort") && precede) {
-          heapSortA(index)
-          index--;
+        if (precede) {
+          switch (type) {
+            case 'Selection Sort':
+              selectionSortA(index);
+              index++;
+              break;
+            case 'Insertion Sort':
+              insertionSortA(index);
+              index++;
+              break;
+            case 'Merge Sort':
+              mergeSortA(index);
+              index++;
+              break;
+            case 'Heap Sort':
+              heapSortA(index);
+              index--;
+              break;
+            case 'Quick Sort':
+              quickSortA(index);
+              index++;
+              break;
+          }
         }
         precede = false;
       } else { //automatically increment
-        if (type == "Selection Sort") {
-          selectionSortA(index);
-          index++;
-        } else if (type == "Insertion Sort") {
-          insertionSortA(index);
-          index++;
-        } else if (type == "Merge Sort") {
-          mergeSortA(index);
-          index++;
-        } else if (type == "Heap Sort") {
-          heapSortA(index)
-          index--;
+        switch (type) {
+          case 'Selection Sort':
+            selectionSortA(index);
+            index++;
+            break;
+          case 'Insertion Sort':
+            insertionSortA(index);
+            index++;
+            break;
+          case 'Merge Sort':
+            mergeSortA(index);
+            index++;
+            break;
+          case 'Heap Sort':
+            heapSortA(index);
+            index--;
+            break;
+          case 'Quick Sort':
+            quickSortA(index);
+            index++;
+            break;
         }
       }
-    }
+    } //sorting allowed
   }
 
   //outline box (removes black bars along the sides)
@@ -268,19 +291,30 @@ function changeBox() {
   textStyle(BOLD);
   text(type, 130, 100);
   textStyle(NORMAL);
-  if (type == "Selection Sort") {
-    text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Swaps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
-    index = 0;
-  } else if (type == "Insertion Sort") {
-    text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower than itself.\n-These steps repeat till looped though every bar.', 132, 115);
-    index = 1;
-  } else if (type == "Merge Sort") {
-    text('This is a type of sorting where...\n-Splits the list of bars into individual bars.\n-\"Merges\" two bars next to each other to form a list with two bars.\n-The new list is sorted so that the sorted bar is first.\n-Then two lists (of two bars) are merged together so that all bars\nare in order.\n-Repeat until back to one list.', 132, 115);
-    index = 0;
-  } else if (type == "Heap Sort") {
-    text('This is a type of sorting where...\n-A max heap (binary tree). This is a structure where a parent\nelement has two other child elements connected to it. The parent\nelement is always bigger then the child element.\n-After this the last bar of the unsorted area and the first bar is \nswapped.\n-After the flip, the original first bar (the one that\'s last now) is part of\nthe sorted area.\n-Then remake the max heap for the unsorted area and repeat!', 132, 115);
-  } else {
-    console.log("ERROR!");
+
+  switch (type) {
+    case 'Selection Sort':
+      text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Swaps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
+      index = 0;
+      break;
+    case 'Insertion Sort':
+      text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower than itself.\n-These steps repeat till looped though every bar.', 132, 115);
+      index = 1;
+      break;
+    case 'Merge Sort':
+      text('This is a type of sorting where...\n-Splits the list of bars into individual bars.\n-\"Merges\" two bars next to each other to form a list with two bars.\n-The new list is sorted so that the sorted bar is first.\n-Then two lists (of two bars) are merged together so that all bars\nare in order.\n-Repeat until back to one list.', 132, 115);
+      index = 0;
+      break;
+    case 'Heap Sort':
+      text('This is a type of sorting where...\n-A max heap (binary tree). This is a structure where a parent\nelement has two other child elements connected to it. The parent\nelement is always bigger then the child element.\n-After this the last bar of the unsorted area and the first bar is \nswapped.\n-After the flip, the original first bar (the one that\'s last now) is part of\nthe sorted area.\n-Then remake the max heap for the unsorted area and repeat!', 132, 115);
+      break;
+    case 'Quick Sort':
+      text('This is a type of sorting where...\n-Looks at the last bar and moves any bars that are shorter then it to\n its left and bars taller then it to the right.\n-Repeat for left and right side.', 132, 115);
+      index = 0;
+      break;
+    default:
+      console.log("ERROR!");
+      break;
   }
 }
 
@@ -575,9 +609,56 @@ function generateMaxHeapA(arr) {
   return arr;
 }
 
+/** quickSortA
+ *  
+ * quickSortA - Uses the quick sort algorithm to sort the bars. 
+ *
+ * @param z Index
+ */
+function quickSortA(z) {
+  let arr2D = [];
+  if (z == 0)
+    arr2D = [arrToSort];
+  else
+    arr2D = tempArr;
+  let newArr = [];
+  for (let i = 0; i < arr2D.length; i++) {
+    let leftArr = [];
+    let centre = [arr2D[i][arr2D[i].length - 1]];
+    let rightArr = [];
+    if (arr2D[i].length > 1) {
+      for (let j = 0; j < arr2D[i].length - 1; j++) {
+        if (arr2D[i][j].length <= centre[0].length) {
+          leftArr.push(arr2D[i][j])
+        } else if (arr2D[i][j].length > centre[0].length) {
+          rightArr.push(arr2D[i][j])
+        }
+      }
+      if (leftArr[0] !== undefined) {
+        newArr.push(leftArr)
+      }
+      newArr.push(centre)
+      if (rightArr[0] !== undefined) {
+        newArr.push(rightArr)
+      }
+    } else {
+      newArr.push(arr2D[i])
+    }
+  }
+
+  arr2D = newArr;
+  let arrGreat = false;
+  for (let ele of arr2D) {
+    if (ele.length > 1) {
+      arrGreat = true;
+    }
+  }
+  z++;
+  tempArr = arr2D;
+  arrToSort = array2DTo1DA(arr2D);
+}
 
 var secretCode = 0;
-
 function keyPressed() {
   if (keyCode == 73)
     secretCode = 73;
