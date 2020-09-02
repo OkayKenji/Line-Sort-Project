@@ -15,3 +15,5 @@ v2.0.0 - Overhaul of code supporting the program. Such that:
  - Many other internal changes
  
   In addition, this update introduces merge and heap sorting.
+  
+v2.1.0 - Adding quick sort.
