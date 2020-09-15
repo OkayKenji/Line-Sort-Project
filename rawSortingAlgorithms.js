@@ -2,7 +2,7 @@
 //i.e. these can only sort interger arrays and will not sort the lines
 //see the "main.js" for the actual ones
 //
-// v8.2020
+// v9.2020
 //
 // Credits:
 //  * Wikipedia
@@ -102,7 +102,6 @@ function mergeSort(arr, index) {
     return mergeSort(newArr, index);
 }
 
-
 /** mergeArr
  *
  * mergeArr - Merges two arrays. Merge means to take in two sorted arrays and combines them into one sorted array. 
@@ -196,7 +195,7 @@ function heapSort(arr) {
     for (let j = i; j < arr.length; j++) {
       sorted.push(heapArr[j]);
     }
-    
+
     let reHeap = [];
 
     for (let k = 0; k < i; k++) {
@@ -326,6 +325,41 @@ function quickSort(arr, index) {
     return quickSort(arr2D, index)
   else
     return array2DTo1D(arr2D);
+}
+
+/** Shell Sort
+ * 
+ * How shell sort works:
+ * - Initial Gap sequence is determined. In this case the first gap is the non-rounded interger of length of the array / 2.
+ * - Makes a new subarrays that have values from the original array seperated by the gap. Sorts each subarray independently.
+ * - Reflects that corrected order in the original array. 
+ * - Divides gap by 2 and repeat.
+ * 
+ * @param arr The array to sort
+ * @param gap Gap
+ */
+function shellSort(arr, gap) {
+  //let gap = Math.trunc(arr.length / 2) ; 
+  for (let i = 0; i < gap; i++) {
+    let elementList = [];
+    let indexList = [];
+
+    for (let j = i;
+      (j) < arr.length; j += gap) {
+      elementList.push(arr[j]);
+      indexList.push(j);
+    }
+
+    elementList = insertionSort(elementList);
+    for (let k = 0; k < elementList.length; k++) {
+      arr[indexList[k]] = elementList[k];
+    }
+  }
+
+  if (gap == 1)
+    return arr;
+  else
+    return shellSort(arr, Math.trunc(gap / 2));
 }
 
 /**  returnRandomArr

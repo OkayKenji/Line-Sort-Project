@@ -17,3 +17,5 @@ v2.0.0 - Overhaul of code supporting the program. Such that:
   In addition, this update introduces merge and heap sorting.
   
 v2.1.0 - Adding quick sort.
+
+v2.2.0 - Adding shellsort. 

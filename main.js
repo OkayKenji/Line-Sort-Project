@@ -63,6 +63,7 @@ function setup() {
   sortType.option('Merge Sort');
   sortType.option('Heap Sort');
   sortType.option('Quick Sort');
+  sortType.option('Shellsort');
   sortType.changed(changeBox);
 
   //creates the drop down menu for what color scheme user wants
@@ -132,8 +133,12 @@ function setup() {
     //helps move off the start screen
     startBar = true;
 
-    if (type == "Heap Sort") {
+    if (type == "Heap Sort") { //here because the array has to exist before knowing the length of it. 
       index = arrToSort.length - 1
+    }
+
+    if (type == "Shellsort") { //here because the array has to exist before knowing the length of it. 
+      index = Math.trunc(arrToSort.length / 2)
     }
   });
 
@@ -198,6 +203,10 @@ function draw() {
               quickSortA(index);
               index++;
               break;
+            case 'Shellsort':
+              shellSortA(index);
+              index = Math.trunc(index / 2);
+              break;
           }
         }
         precede = false;
@@ -222,6 +231,10 @@ function draw() {
           case 'Quick Sort':
             quickSortA(index);
             index++;
+            break;
+          case 'Shellsort':
+            shellSortA(index);
+            index = Math.trunc(index / 2);
             break;
         }
       }
@@ -312,8 +325,8 @@ function changeBox() {
       text('This is a type of sorting where...\n-Looks at the last bar and moves any bars that are shorter then it to\n its left and bars taller then it to the right.\n-Repeat for left and right side.', 132, 115);
       index = 0;
       break;
-    default:
-      console.log("ERROR!");
+    case 'Shellsort':
+      text('This is a type of sorting where...\n-Initial Gap sequence is determined. In this case the first gap is the\namount of bars / 2\n-Makes a new smaller group of bars that have values from the\noriginal array seperated by the gap. Sorts each subarray\nindependently.\n-Reflects that corrected order in the original list of bars.\n-Divides gap by 2 and repeat.', 132, 115);
       break;
   }
 }
@@ -658,7 +671,57 @@ function quickSortA(z) {
   arrToSort = array2DTo1DA(arr2D);
 }
 
+/** shellSortA
+ *  
+ * shellSortA - Uses the shellsort algorithm to sort the bars. 
+ *
+ * @param gap The gap between bars.
+ */
+function shellSortA(gap) {
+  //let gap = Math.trunc(arr.length / 2) ; 
+  for (let i = 0; i < gap; i++) {
+    let elementList = [];
+    let indexList = [];
+
+    for (let j = i;
+      (j) < arrToSort.length; j += gap) {
+      elementList.push(arrToSort[j]);
+      indexList.push(j);
+    }
+
+    elementList = insertionSortB(elementList);
+    for (let k = 0; k < elementList.length; k++) {
+      arrToSort[indexList[k]] = elementList[k];
+    }
+  }
+}
+
+/** insertionSortB
+ *
+ * insertionSortB - Uses the insertion sort algorithm to sort the bars. This version sorts the whole array rather then just one pass.
+ *
+ * @param The current index. 
+ * @return The next index
+ */
+function insertionSortB(arr) {
+  let y = true;
+  for (let i = 1; i < arr.length; i++) {
+    for (let j = i;
+      (y) && (j > 0); j--) {
+      if (arr[j].length < arr[j - 1].length) {
+        let temp = arr[j];
+        arr[j] = arr[j - 1];
+        arr[j - 1] = temp;
+      } else
+        y = false;
+    }
+    y = true;
+  }
+  return arr;
+}
+
 var secretCode = 0;
+
 function keyPressed() {
   if (keyCode == 73)
     secretCode = 73;
