@@ -7,6 +7,7 @@
 //  * Merge Sort
 //  * Heap Sort
 //  * Quick Sort
+//  * Shellsort
 //
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
