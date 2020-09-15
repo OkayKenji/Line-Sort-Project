@@ -326,7 +326,7 @@ function changeBox() {
       index = 0;
       break;
     case 'Shellsort':
-      text('YO', 132, 115);
+      text('This is a type of sorting where...\n-Initial Gap sequence is determined. In this case the first gap is the\namount of bars / 2\n-Makes a new smaller group of bars that have values from the\noriginal array seperated by the gap. Sorts each subarray\nindependently.\n-Reflects that corrected order in the original list of bars.\n-Divides gap by 2 and repeat.', 132, 115);
       break;
   }
 }
@@ -671,6 +671,12 @@ function quickSortA(z) {
   arrToSort = array2DTo1DA(arr2D);
 }
 
+/** shellSortA
+ *  
+ * shellSortA - Uses the shellsort algorithm to sort the bars. 
+ *
+ * @param gap The gap between bars.
+ */
 function shellSortA(gap) {
   //let gap = Math.trunc(arr.length / 2) ; 
   for (let i = 0; i < gap; i++) {
@@ -690,6 +696,13 @@ function shellSortA(gap) {
   }
 }
 
+/** insertionSortB
+ *
+ * insertionSortB - Uses the insertion sort algorithm to sort the bars. This version sorts the whole array rather then just one pass.
+ *
+ * @param The current index. 
+ * @return The next index
+ */
 function insertionSortB(arr) {
   let y = true;
   for (let i = 1; i < arr.length; i++) {
