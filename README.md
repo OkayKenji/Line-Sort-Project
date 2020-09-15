@@ -19,3 +19,5 @@ v2.0.0 - Overhaul of code supporting the program. Such that:
 v2.1.0 - Adding quick sort.
 
 v2.2.0 - Adding shellsort. 
+
+v2.2.1 - Update to documentation
