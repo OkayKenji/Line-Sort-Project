@@ -12,7 +12,7 @@
 // Possible future versions:
 //  * https://en.wikipedia.org/wiki/Sorting_algorithm#Popular_sorting_algorithms;
 //
-// v8.2020 
+// v1.2021.F 
 //
 // Special thanks to: 
 // * "Daniel Shiffman" @ The Coding Train for helping me to learn this stuff
@@ -95,7 +95,7 @@ function setup() {
   //Removes the start screen and all irrelvent input elements. 
   //Loads elements needed on next screen
   go = createButton("GO");
-  go.position(width / 2, height - 35);
+  go.position(width / 2, height - 50);
   go.mousePressed(() => {
 
     //removes unneeded inputs
@@ -279,10 +279,12 @@ function startScreen() {
   textStyle(NORMAL);
   text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
   text("(yes/no)", 11, 420);
-  text("(number)\nMax suggested: 1028", 11, height - 30); //1028 is choosen b/c its a base 2 number. 
   text("(number)\nChanges the number\nof bars.", 200, 345);
 
-  changeBox();
+  textSize(10)
+  textAlign(RIGHT)
+  text("Created using p5.js, see their website @ https://p5js.org/",width-10,height-10);
+   changeBox();
 }
 
 /** changeBox
