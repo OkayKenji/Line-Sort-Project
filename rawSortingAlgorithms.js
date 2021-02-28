@@ -23,14 +23,14 @@
  * @return A sorted array.
  */
 function selectionSort(arr) {
-  for (var i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     var lowestIndex = i;
-    for (var j = i; j < arr.length; j++) {
+    for (let j = i; j < arr.length; j++) {
       if (arr[lowestIndex] > arr[j]) {
         lowestIndex = j;
       }
     }
-    var rem = arr[i];
+    let rem = arr[i];
     arr[i] = arr[lowestIndex];
     arr[lowestIndex] = rem;
   }
