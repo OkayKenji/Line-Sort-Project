@@ -23,3 +23,5 @@ v2.2.0 - Adding shellsort.
 v2.2.1 - Update to documentation
 
 v2.3.2 - Minor changes to address limit set to wrong number (removed the limit). Other adjustments. Added MIT license.
+
+v3.0.0 - Major UI improvements
