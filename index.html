@@ -3,7 +3,6 @@
 
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta charset="utf-8" />
 
@@ -14,7 +13,66 @@
   <script src="bar.js"></script>
   <script src="indicator.js"></script>
   <script src="rawSortingAlgorithms.js"></script>
-  <script src="https://okaykenji.github.io/MouseOverlay/mouseDraw.js"></script>
+  <div class="wrapper">
+    <div id="canvas" class="can">
+      <!--where the main content will go-->
+    </div>
+    <div id="options" class="optio">
+      <div>
+        <p class="heading">Sorting Algorithm Demonstrator</p>
+      </div>
+      <hr>
+      <div>
+        <label for="sortType">Sort type</label>
+        <select id="sortType">
+          <option>Selection Sort</option>
+          <option>Insertion Sort</option>
+          <option>Merge Sort</option>
+          <option>Heap Sort</option>
+          <option>Quick Sort</option>
+          <option>Shellsort</option>
+        </select>
+      </div>
+      <div id="sortTypeExp" class="sortBox">
+        <p id="sortTitle" class="sortTitle"></p>
+        <hr class="sortBoxSep">
+        <p id="sortDescr" class="sortDesc"></p>
+      </div>
+
+      <div>
+        <p style="margin-bottom: 0px;"><b>Settings:</b></p>
+      </div>
+
+      <div>
+        <label for="autoLoop"><b>Manually loop:</b></label>
+        <input type="checkbox" id="autoLoop" checked>
+      </div>
+
+      <div>
+        <label for="numBars"><b>Number of bars:</b></label>
+        <input type="text" id="numBars" value="Auto" style="width : 40px">
+      </div>
+
+      <div>
+        <label for="barColor"><b>Select color:</b></label>
+        <select id="barColor">
+          <option>Red</option>
+          <option>Green</option>
+          <option>Blue</option>
+        </select>
+      </div>
+
+      <hr>
+
+      <div class="wrapper">
+        <button id="start" style="font-size: 1em;">Start</button>
+        <button id="increment" style="font-size: 1em;" disabled>Next ></button>
+      </div>
+      <button id="reset">Restart</button>
+      <p style="font-size: 0.4em;">Created using p5.js, see their website @ https://p5js.org/</p>
+    </div>
+  </div>
+
 </body>
 
 </html>

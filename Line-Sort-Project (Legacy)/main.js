@@ -49,47 +49,141 @@ let barWidth;
 let saved = [];
 let tempArr = [];
 
-//new global bars
-let desiredSort;
+let go, sortType, reset, letsSort, colorSelect, incremental, nxt; //buttons/non-text inputs
+let screenSize, numBarsInput; //text input
 
 function setup() {
-  //Adds event listiner to updates description box. Also saves the deisred sort.
-  document.getElementById("sortType").addEventListener("change", updateSortDescpBox);
-  updateSortDescpBox();
+  createCanvas(512, 512); //dont go over 1028
+  strokeWeight(1);
 
-  document.getElementById("numBars").addEventListener("change", barGenerator);
-  document.getElementById("barColor").addEventListener("change", barGenerator);
+  //creates the drop down menu for what type of sort the user wants
+  sortType = createSelect();
+  sortType.position(10, 85);
+  sortType.option('Selection Sort');
+  sortType.option('Insertion Sort');
+  sortType.option('Merge Sort');
+  sortType.option('Heap Sort');
+  sortType.option('Quick Sort');
+  sortType.option('Shellsort');
+  sortType.changed(changeBox);
 
-  //add event listener to "Start" button; to start the program...(start meaning to start sorting)
-  document.getElementById("start").addEventListener("click", startProgram);
+  //creates the drop down menu for what color scheme user wants
+  colorSelect = createSelect();
+  colorSelect.position(130, 315);
+  colorSelect.option('Red'); // #FF0000
+  colorSelect.option('Green'); // #00FF00
+  colorSelect.option('Blue'); // #0000FF
+  colorSelect.size(65)
 
-  document.getElementById("reset").addEventListener("click", () => {   location.reload()})
+  //creates the drop down menu for if the user wants to manually loop
+  incremental = createSelect();
+  incremental.position(130, 390);
+  incremental.option('No');
+  incremental.option('Yes');
+  incremental.size(65)
 
-  //moves lcoation of canvas
-  let drawing = createCanvas(windowWidth * (3.75 / 5), windowHeight - 5); //4/5th of screen
-  drawing.parent("canvas");
+  //input if user want to have a larger screen
+  screenSize = createInput('512');
+  screenSize.position(130, height - 60);
+  screenSize.size(55)
 
-  //intial call to generate intial array;
-  barGenerator();
+  //input for the number of bars
+  numBarsInput = createInput('512');
+  numBarsInput.position(320, 315);
+  numBarsInput.size(55)
+
+  //Removes the start screen and all irrelvent input elements. 
+  //Loads elements needed on next screen
+  go = createButton("GO");
+  go.position(width / 2, height - 50);
+  go.mousePressed(() => {
+
+    //removes unneeded inputs
+    sortType.remove()
+    go.remove();
+    colorSelect.remove();
+    incremental.remove();
+    screenSize.remove();
+    numBarsInput.remove();
+    clear();
+
+    //stores the color gradient user wants
+    colorScheme = colorSelect.value();
+
+    //if the user wants to manually loop through, sets 'inc' to true and creates a button that a user can
+    //press to increment the loop
+    if (incremental.value() == "Yes") {
+      inc = true;
+      nxt = createButton("\>");
+      nxt.position(0, 25);
+    } else
+      inc = false;
+
+    //creates buttons to start the sort or to reset
+    letsSort = createButton("Sort!");
+    letsSort.position(0, 25);
+    reset = createButton("Reset");
+    reset.position(0, 0);
+
+    //resizes the canvas to the size requested by the user.
+    resizeCanvas(parseInt(screenSize.value()), parseInt(screenSize.value()));
+
+    //generates the all of the bars (unsorted)
+    barGenerator();
+
+    //helps move off the start screen
+    startBar = true;
+
+    if (type == "Heap Sort") { //here because the array has to exist before knowing the length of it. 
+      index = arrToSort.length - 1
+    }
+
+    if (type == "Shellsort") { //here because the array has to exist before knowing the length of it. 
+      index = Math.trunc(arrToSort.length / 2)
+    }
+  });
+
+  //loads the start screen and the visuals needed for it
+  startScreen();
+
 }
 
 function draw() {
   if (startBar) {
     background(0); //sets background black so that after each run we can't see the one before it. 
 
+    //when hit resets everything
+    reset.mousePressed(() =>
+      location.reload()
+    );
+
+    //when hit starts the sorting proccess
+    letsSort.mousePressed(() => {
+      sortAllowed = true;
+      letsSort.remove();
+    });
+
+    //if the user wants the line sort to be looped manually loads waits the the next button to be pressed
+    //which makes precede, 'true' so that it allows the sort to run once 
+    if (inc) {
+      nxt.mousePressed(() => precede = true);
+    }
+
+    //draws
+    drawAllLines();
+
     //if sorting is allowed, runs the program in it
     if (sortAllowed) {
+
       //indicator 
       if (index < saved.length && (secretCode > 0)) {
-        let indicate = new indicator(saved[index]);
+        var indicate = new indicator(saved[index]);
         indicate.place();
       }
 
-      drawAllLines();
-
       if (inc) { //if user wants to manually increment
         if (precede) {
-          switch (desiredSort) {
+          switch (type) {
             case 'Selection Sort':
               selectionSortA(index);
               index++;
@@ -118,7 +212,7 @@ function draw() {
         }
         precede = false;
       } else { //automatically increment
-        switch (desiredSort) {
+        switch (type) {
           case 'Selection Sort':
             selectionSortA(index);
             index++;
@@ -145,8 +239,6 @@ function draw() {
             break;
         }
       }
-
-
     } //sorting allowed
   }
 
@@ -157,123 +249,133 @@ function draw() {
   rect(0, 0, width, height)
 }
 
-/**
- * Updates description box. 
+/** startScreen
+ *
+ * startScreen - loads the start screen. It loads all of the text that is needed on the screen.  
+ * 
+ * @return Nothing is returned.
  */
-function updateSortDescpBox() {
-  desiredSort = document.getElementById("sortType").value;
-  document.getElementById("sortTitle").innerText = desiredSort;
+function startScreen() {
+  quickColor();
+  rect(2.5, 2.5, width - 5, height - 5) //creates the rectangle
 
-  switch (desiredSort) {
+  textAlign(CENTER);
+  fill(255);
+  strokeWeight(0);
+  textSize(32);
+  text('Sorter', width / 2, 40);
+  textSize(14)
+  text('Sorts the lines in increasing order using diffrent types of sorting algorithms', width / 2, 65);
+
+  textAlign(LEFT);
+  textSize(14);
+  textStyle(BOLD);
+  text("Select the color:", 10, 330);
+  text("Manually loop:", 10, 405);
+  text("Width/Height", 10, height - 45);
+  text("Number of bars:", 200, 330);
+
+  textSize(12);
+  textStyle(NORMAL);
+  text("(red/geen/blue)\nChanges the color of\nthe bars.", 11, 345);
+  text("(yes/no)", 11, 420);
+  text("(number)\nChanges the number\nof bars.", 200, 345);
+
+  textSize(10)
+  textAlign(RIGHT)
+  text("Created using p5.js, see their website @ https://p5js.org/",width-10,height-10);
+   changeBox();
+}
+
+/** changeBox
+ * 
+ *  changeBox - Loads the text that describes how each type of sort works. This draws a box with text on top of anything 
+ *  that was there before
+ *  
+ *  @return Nothing is returned
+ */
+function changeBox() {
+  quickColor();
+
+  //sub-box with similar design
+  rect(125, 85, width - 50 - 85, 225);
+
+  quickTextColor();
+  type = sortType.value();
+  textSize(12);
+  textAlign(LEFT);
+  textStyle(BOLD);
+  text(type, 130, 100);
+  textStyle(NORMAL);
+
+  switch (type) {
     case 'Selection Sort':
-      document.getElementById("sortDescr").innerText = 'This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Swaps positions with it. This step keeps on repeating till\n all are sorted.';
+      text('This is a type of sorting where...\n-Looks at the very first bar (we could call it \'n\')\n-Then it looks at all the bars to the right of \'n\' and looks for the\n shortest bar say \'x\'.\n-After finding it the bar \'n\' and \'x\' switch positions.\n-After that it goes to the next bar. Looks for the shortest bar to the\n right of it. Swaps positions with it. This step keeps on repeating till\n all are sorted.', 132, 115);
       index = 0;
       break;
     case 'Insertion Sort':
-      document.getElementById("sortDescr").innerText = 'This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower than itself.\n-These steps repeat till looped though every bar.';
+      text('This is a type of sorting where...\n-Looks at the second bar (we could call it \'n\')\n-Then looks to the bar to the left \'n\' and if its lower in it, pushes it to\nthe right and takes it place.\n-Keeps on doing this till bar to the left is lower than itself.\n-These steps repeat till looped though every bar.', 132, 115);
       index = 1;
       break;
     case 'Merge Sort':
-      document.getElementById("sortDescr").innerText = 'This is a type of sorting where...\n-Splits the list of bars into individual bars.\n-\"Merges\" two bars next to each other to form a list with two bars.\n-The new list is sorted so that the sorted bar is first.\n-Then two lists (of two bars) are merged together so that all bars\nare in order.\n-Repeat until back to one list.';
+      text('This is a type of sorting where...\n-Splits the list of bars into individual bars.\n-\"Merges\" two bars next to each other to form a list with two bars.\n-The new list is sorted so that the sorted bar is first.\n-Then two lists (of two bars) are merged together so that all bars\nare in order.\n-Repeat until back to one list.', 132, 115);
       index = 0;
       break;
     case 'Heap Sort':
-      document.getElementById("sortDescr").innerText = 'This is a type of sorting where...\n-A max heap (binary tree). This is a structure where a parent\nelement has two other child elements connected to it. The parent\nelement is always bigger then the child element.\n-After this the last bar of the unsorted area and the first bar is \nswapped.\n-After the flip, the original first bar (the one that\'s last now) is part of\nthe sorted area.\n-Then remake the max heap for the unsorted area and repeat!';
+      text('This is a type of sorting where...\n-A max heap (binary tree). This is a structure where a parent\nelement has two other child elements connected to it. The parent\nelement is always bigger then the child element.\n-After this the last bar of the unsorted area and the first bar is \nswapped.\n-After the flip, the original first bar (the one that\'s last now) is part of\nthe sorted area.\n-Then remake the max heap for the unsorted area and repeat!', 132, 115);
       break;
     case 'Quick Sort':
-      document.getElementById("sortDescr").innerText = 'This is a type of sorting where...\n-Looks at the last bar and moves any bars that are shorter then it to\n its left and bars taller then it to the right.\n-Repeat for left and right side.';
+      text('This is a type of sorting where...\n-Looks at the last bar and moves any bars that are shorter then it to\n its left and bars taller then it to the right.\n-Repeat for left and right side.', 132, 115);
       index = 0;
       break;
     case 'Shellsort':
-      document.getElementById("sortDescr").innerText = 'This is a type of sorting where...\n-Initial Gap sequence is determined. In this case the first gap is the\namount of bars / 2\n-Makes a new smaller group of bars that have values from the\noriginal array seperated by the gap. Sorts each subarray\nindependently.\n-Reflects that corrected order in the original list of bars.\n-Divides gap by 2 and repeat.';
+      text('This is a type of sorting where...\n-Initial Gap sequence is determined. In this case the first gap is the\namount of bars / 2\n-Makes a new smaller group of bars that have values from the\noriginal array seperated by the gap. Sorts each subarray\nindependently.\n-Reflects that corrected order in the original list of bars.\n-Divides gap by 2 and repeat.', 132, 115);
       break;
   }
-}
-
-function prece() {
-  precede = true;
-}
-
-function startProgram() {
-  //disable all unneeded button or input elements s
-  document.getElementById("start").disabled = true;
-  document.getElementById("sortType").disabled = true;
-  document.getElementById("autoLoop").disabled = true;
-  document.getElementById("numBars").disabled = true;
-  document.getElementById("barColor").disabled = true;
-
-
-  //if the user wants to manually loop through, sets 'inc' to true and creates a button that a user can
-  //press to increment the loop
-  if (document.getElementById("autoLoop").checked) {
-    inc = true;
-    document.getElementById("increment").disabled = false;
-    document.getElementById("increment").addEventListener("click", prece)
-  } else
-    inc = false;
-
-  startBar = true;
-  sortAllowed = true;
-
-  if (desiredSort == "Heap Sort") { //here because the array has to exist before knowing the length of it. 
-    index = arrToSort.length - 1
-  }
-
-  if (desiredSort == "Shellsort") { //here because the array has to exist before knowing the length of it. 
-    index = Math.trunc(arrToSort.length / 2)
-  }
-
 }
 
 /**barGenerator
  * 
- * barGenerator - Generates a unsorted array of bar objects (intially).
+ * barGenerator - Generates a unsorted array of bar objects.
  * 
  * @returns Nothing
  */
 function barGenerator() {
-  //resets all arrays; 
   let arrOfBars = [];
-  saved = [];
-  arrToSort = [];
-
-  //stores the color gradient user wants
-  colorScheme = document.getElementById("barColor").value;
-
-  numRequestBars = document.getElementById("numBars").value;
-  if (numRequestBars === "Auto") {
-    numRequestBars = width;
-  } else {
-    numRequestBars = Number.parseInt(numRequestBars);
-    if (isNaN(numRequestBars)) {
-      numRequestBars = width;
-      console.log("Error! Invalid number.");
-    } else if (numRequestBars > 5000) {
-      numRequestBars = 5000;
-      console.log("Error! Too many bars,");
-    }
-
-  }
+  numRequestBars = numBarsInput.value();
 
   barWidth = width / numRequestBars;
 
-  //relating to where the bar should be placed
   let spacer = barWidth / 2 + 0.5;
   let xLocCenter = spacer;
-
-  //relating to bar height
-  let deltaHeight = height / numRequestBars;
-  let barHeight = deltaHeight;
-
+  let L1 = 0
   for (let i = 0; i < numRequestBars; i++) {
-    arrOfBars.push(new bar(xLocCenter, barHeight))
-    barHeight += deltaHeight;
+    arrOfBars.push(new bar(xLocCenter, L1))
+    L1 += barWidth;
     saved.push(xLocCenter);
     xLocCenter += spacer * 2 - 1;
-
   }
   arrToSort = shuffle(arrOfBars);
-  drawAllLines();
+}
+
+
+/** quickColor
+ *
+ *  quickColor - Has the strokeWeight/stroke color/fill color needed to set the color of boxes on the start screen
+ */
+function quickColor() {
+  strokeWeight(5); //border thickness;
+  stroke(255, 200, 0, 255); //color of the border; (#FFC800)
+  fill(20) //inside;
+}
+
+/** quickTextColor
+ *
+ *  quickTextColor - Has the fill/stroke weight for text
+ */
+function quickTextColor() {
+  fill(255);
+  strokeWeight(0);
 }
 
 /** drawAllLines
@@ -281,7 +383,6 @@ function barGenerator() {
  * drawAllLines - Displays (draws) all the lines in the arrToSort array
  */
 function drawAllLines() {
-  clear();
   rectMode(CENTER);
   for (let j = 0; j < arrToSort.length; j++) {
     arrToSort[j].place(saved[j]);
@@ -622,7 +723,7 @@ function insertionSortB(arr) {
   return arr;
 }
 
-let secretCode = 0;
+var secretCode = 0;
 
 function keyPressed() {
   if (keyCode == 73)

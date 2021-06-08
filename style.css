@@ -1,7 +1,50 @@
 html, body {
   margin: 0;
   padding: 0;
+  font-family: "Gill Sans", sans-serif;
+  background-color: black;
 }
 canvas {
   display: block;
+}
+.wrapper {
+  display : grid;
+  grid-template-columns: 3.75fr 1.25fr;
+  gap : 1px;
+  color: white;
+}
+.can {
+  border: 2px solid #FFC800;
+}
+.optio {
+  border: 2px solid red;
+  padding: 5px;
+  
+}
+.heading{
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 1.7em;
+  font-weight: bold;
+}
+.sortBox {
+  border: 2px solid orange;
+  background-color: tomato;
+  margin-top: 5px;
+}
+.sortDesc{
+  padding-left : 5px;
+  padding-right : 5px;
+  margin-top: 0px;
+  font-size: 0.8em;
+}
+.sortTitle {
+  padding-left : 5px;
+  padding-right : 5px;
+  margin-top: 5px;
+  margin-bottom: 0.4px;
+  font-size: 1em;
+}
+.sortBoxSep {
+  margin: 5px;
 }
